@@ -48,6 +48,7 @@ void main() async {
   });
 }
 
+///QuickLoanApp
 class QuickLoanApp extends StatefulWidget {
   const QuickLoanApp({Key? key}) : super(key: key);
   @override
@@ -105,7 +106,7 @@ class _QuickLoanAppState extends State<QuickLoanApp>
             textScaleFactor: 1.0,
           ),
           child: Stack(
-            children: [ 
+            children: [
               ClipRRect(child: child),
               indicator,
             ],
