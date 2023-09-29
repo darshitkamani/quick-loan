@@ -65,7 +65,7 @@ class LoanButtonWidget extends StatelessWidget {
                       title ?? '',
                       textAlign: TextAlign.center,
                       style: style ??
-                          FontUtils.h10(
+                          FontUtils.h11(
                             fontColor: ColorUtils.themeColor.oxff000000,
                             fontWeight: FWT.bold,
                           ),

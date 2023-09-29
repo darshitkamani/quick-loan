@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -161,6 +162,9 @@ class ConnectivityService {
         bool isUserFirstTime =
             StorageUtils.prefs.getBool(StorageKeyUtils.isUserFirstTime) ??
                 false;
+        if (kDebugMode) {
+          return;
+        }
         if (isUserFirstTime == false) {
           Timer(const Duration(seconds: 1), () async {
             String prefsAvailableScreens = StorageUtils.prefs
@@ -173,7 +177,7 @@ class ConnectivityService {
                 headers: {"secret_key": dotenv.get(EnvUtils.secretKey)},
               );
               if (res.statusCode == 200) {
-                // print("ABC ===> DEF ");
+                print("ABC ===> DEF ");
 
                 AvailableScreenAdsModel availableScreenAdsModel =
                     AvailableScreenAdsModel.fromJson(jsonDecode(res.body));

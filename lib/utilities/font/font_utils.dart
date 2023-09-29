@@ -61,7 +61,18 @@ class FontUtils {
     );
   }
 
-  static TextStyle h12({
+  static TextStyle h11({
+    Color? fontColor,
+    FWT fontWeight = FWT.regular,
+  }) {
+    return TextStyle(
+      color: fontColor ?? ColorUtils.themeColor.oxff000000,
+      fontWeight: getFontWeight(fontWeight),
+      fontSize: 11,
+      fontFamily: 'Barlow',
+    );
+  }
+   static TextStyle h12({
     Color? fontColor,
     FWT fontWeight = FWT.regular,
   }) {
