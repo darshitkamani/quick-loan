@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:facebook_audience_network/facebook_audience_network.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:action_broadcast/action_broadcast.dart';
@@ -54,6 +55,9 @@ class _FDCalculatorState extends State<FDCalculator> {
     super.initState();
     initReceiver();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+     if (!kDebugMode) {
+        await FirebaseAnalytics.instance.logEvent(name: screenName);
+      }
       final provider =
           Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
 

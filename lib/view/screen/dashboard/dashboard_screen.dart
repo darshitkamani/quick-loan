@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:instant_pay/l10n/locale_keys.g.dart';
@@ -55,6 +57,9 @@ class _DashboardScreenState extends State<DashboardScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+     if (!kDebugMode) {
+        await FirebaseAnalytics.instance.logEvent(name: screenName);
+      }
       WidgetsBinding.instance.addObserver(this);
 
       // final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);

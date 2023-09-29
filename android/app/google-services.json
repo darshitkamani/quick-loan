@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1028585611547",
+    "project_id": "credit-card-advisor-df286",
+    "storage_bucket": "credit-card-advisor-df286.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028585611547:android:cd50ff4c4dc2012b25b3be",
+        "android_client_info": {
+          "package_name": "com.quick_loan_credit_card_advisor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJbeTvyPVlEXiG21sjfSJ8jKsnCuDWuUo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

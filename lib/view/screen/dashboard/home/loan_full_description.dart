@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:action_broadcast/action_broadcast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -51,6 +52,9 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
     initReceiver();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+     if (!kDebugMode) {
+        await FirebaseAnalytics.instance.logEvent(name: screenName);
+      }
       final provider =
           Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
       myAdsIdClass = await LoadAdsByApi()

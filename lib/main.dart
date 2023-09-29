@@ -1,5 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -17,6 +20,7 @@ import 'utilities/routes/route_utils.dart';
 ///
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   await EasyLocalization.ensureInitialized();
 
   await dotenv.load(fileName: ".env");
@@ -58,11 +62,17 @@ class QuickLoanApp extends StatefulWidget {
 class _QuickLoanAppState extends State<QuickLoanApp>
     with WidgetsBindingObserver {
   late ConnectivityIndicatorWidget indicator;
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {});
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+    if (!kDebugMode) {
+        await analytics.logEvent(name: 'EVENT_STARTED');
+      }
+    });
   }
 
   @override
@@ -85,6 +95,7 @@ class _QuickLoanAppState extends State<QuickLoanApp>
           Locale('gu', 'IN'),
         ],
         builder: _builder,
+        navigatorObservers: [observer],
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
             scaffoldBackgroundColor: ColorUtils().greyBGColor,

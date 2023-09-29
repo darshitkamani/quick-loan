@@ -1,12 +1,13 @@
-import 'dart:async';
 import 'dart:io';
 
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
 import 'package:action_broadcast/action_broadcast.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:facebook_audience_network/facebook_audience_network.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:launch_review/launch_review.dart';
 import 'package:instant_pay/l10n/locale_keys.g.dart';
 import 'package:instant_pay/utilities/assets/asset_utils.dart';
 import 'package:instant_pay/utilities/colors/color_utils.dart';
@@ -14,7 +15,6 @@ import 'package:instant_pay/utilities/font/font_utils.dart';
 import 'package:instant_pay/utilities/routes/route_utils.dart';
 import 'package:instant_pay/utilities/storage/storage.dart';
 import 'package:instant_pay/view/screen/dashboard/home/model/available_ads_response.dart';
-import 'package:instant_pay/view/widget/ads_widget/fb_native_add.dart';
 import 'package:instant_pay/view/widget/ads_widget/interstitial_ads_widget.dart';
 import 'package:instant_pay/view/widget/ads_widget/load_ads_by_api.dart';
 import 'package:instant_pay/view/widget/lottie_ad_widget.dart';
@@ -22,8 +22,6 @@ import 'package:instant_pay/view/widget/profile_button_button_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:facebook_audience_network/facebook_audience_network.dart';
-import 'package:flutter/foundation.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -34,18 +32,12 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String screenName = "ProfileScreen";
-  bool isFacebookAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
-  bool isADXAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
-  bool isAdmobAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
-  bool isAdShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
+  bool isFacebookAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
+  bool isADXAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
+  bool isAdmobAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
+  bool isAdShow = StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
 
-  bool isCheckScreen =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isCheckScreenForAdInApp) ??
-          false;
+  bool isCheckScreen = StorageUtils.prefs.getBool(StorageKeyUtils.isCheckScreenForAdInApp) ?? false;
 
   MyAdsIdClass myAdsIdClass = MyAdsIdClass();
   late StreamSubscription receiver;
@@ -55,18 +47,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     initReceiver();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final provider =
-          Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
-      int prefferedLanguage =
-          StorageUtils.prefs.getInt(StorageKeyUtils.applicationLanguageState) ??
-              0;
+     if (!kDebugMode) {
+        await FirebaseAnalytics.instance.logEvent(name: screenName);
+      }
+      final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+      int prefferedLanguage = StorageUtils.prefs.getInt(StorageKeyUtils.applicationLanguageState) ?? 0;
 
       setState(() {
         isLangSwitchValue = (prefferedLanguage == 0) ? false : true;
       });
 
-      myAdsIdClass = await LoadAdsByApi()
-          .isAvailableAds(context: context, screenName: screenName);
+      myAdsIdClass = await LoadAdsByApi().isAvailableAds(context: context, screenName: screenName);
       // print("ABC __> $availableAdsList");
       if (myAdsIdClass.availableAdsList.contains("Native")) {
         // if (isFacebookAdsShow) {
@@ -89,28 +80,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
       if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
         if (isCheckScreen) {
-          provider.loadFBInterstitialAd(
-              myAdsIdClass: myAdsIdClass,
-              screenName: screenName,
-              fbID: myAdsIdClass.facebookInterstitialId,
-              googleID: myAdsIdClass.googleInterstitialId);
+          provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
         } else {
-          print(
-              "myAdsIdClass.isFacebook && isFacebookAdsShow interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
+          print("myAdsIdClass.isFacebook && isFacebookAdsShow interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
           if (myAdsIdClass.isFacebook && isFacebookAdsShow) {
-            provider.loadFBInterstitialAd(
-                myAdsIdClass: myAdsIdClass,
-                screenName: screenName,
-                fbID: myAdsIdClass.facebookInterstitialId,
-                googleID: myAdsIdClass.googleInterstitialId);
+            provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
           }
           if (myAdsIdClass.isGoogle && isADXAdsShow) {
-            provider.loadAdxInterstitialAd(
-                myAdsIdClass: myAdsIdClass,
-                screenName: screenName,
-                context: context,
-                fbInterID: myAdsIdClass.facebookInterstitialId,
-                googleInterID: myAdsIdClass.googleInterstitialId);
+            provider.loadAdxInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, context: context, fbInterID: myAdsIdClass.facebookInterstitialId, googleInterID: myAdsIdClass.googleInterstitialId);
           }
         }
       }
@@ -128,9 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //   updatePrefsResponse(adType: 'Native');
   // }
   _showFBNativeAd({required String isCalledFrom}) {
-    bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool(
-            '${StorageKeyUtils.isFailedTwiceToLoadFbAdId}${myAdsIdClass.facebookNativeId}') ??
-        false;
+    bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}${myAdsIdClass.facebookNativeId}') ?? false;
 
     if (myAdsIdClass.facebookNativeId.isEmpty || isFailedTwiceToLoadFbAdId) {
       loadAdxNativeAd(isCalledFrom: isCalledFrom);
@@ -143,8 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget loadFbNativeAd(String adId, {String isCalledFrom = 'init'}) {
-    print(
-        'Screen name loadFbNativeAd() ---> $screenName isCalledFrom -->$isCalledFrom ');
+    print('Screen name loadFbNativeAd() ---> $screenName isCalledFrom -->$isCalledFrom ');
 
     String nativeAdId = adId;
     // AdsUnitId().getFacebookNativeAdId();
@@ -176,13 +150,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           StorageUtils.prefs.setBool(StorageKeyUtils.isShowFacebookAds, false);
           StorageUtils.prefs.setBool(StorageKeyUtils.isShowADXAds, true);
           StorageUtils.prefs.setBool(StorageKeyUtils.isShowAdmobAds, true);
-          bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool(
-                  '${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId') ??
-              false;
+          bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId') ?? false;
 
           if (!isFailedTwiceToLoadFbAdId) {
-            StorageUtils.prefs.setBool(
-                '${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId', true);
+            StorageUtils.prefs.setBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId', true);
             loadAdxNativeAd(isCalledFrom: 'fbNativeFunction');
           }
         }
@@ -193,15 +164,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   updatePrefsResponse({required String adType}) {
     Timer(const Duration(seconds: 1), () {
-      isFacebookAdsShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ??
-              false;
-      isADXAdsShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
-      isAdmobAdsShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
-      isAdShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
+      isFacebookAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
+      isADXAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
+      isAdmobAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
+      isAdShow = StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
       setState(() {});
       if (isAdmobAdsShow) {
         setState(() {
@@ -219,36 +185,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
       print('$screenName Data ----> ${intent.extras}');
       switch (intent.action) {
         case 'LoadAd':
-          final provider = Provider.of<InterstitialAdsWidgetProvider>(context,
-              listen: false);
-          myAdsIdClass = await LoadAdsByApi()
-              .isAvailableAds(context: context, screenName: screenName);
+          final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+          myAdsIdClass = await LoadAdsByApi().isAvailableAds(context: context, screenName: screenName);
           setState(() {});
 
           if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
             if (isCheckScreen) {
-              provider.loadFBInterstitialAd(
-                  myAdsIdClass: myAdsIdClass,
-                  screenName: screenName,
-                  fbID: myAdsIdClass.facebookInterstitialId,
-                  googleID: myAdsIdClass.googleInterstitialId);
+              provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
             } else {
-              print(
-                  "myAdsIdClass.isFacebook && isFacebookAdsShow in receiver interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
+              print("myAdsIdClass.isFacebook && isFacebookAdsShow in receiver interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
               if (myAdsIdClass.isFacebook && isFacebookAdsShow) {
-                provider.loadFBInterstitialAd(
-                    myAdsIdClass: myAdsIdClass,
-                    screenName: screenName,
-                    fbID: myAdsIdClass.facebookInterstitialId,
-                    googleID: myAdsIdClass.googleInterstitialId);
+                provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
               }
               if (myAdsIdClass.isGoogle && isADXAdsShow) {
-                provider.loadAdxInterstitialAd(
-                    myAdsIdClass: myAdsIdClass,
-                    screenName: screenName,
-                    context: context,
-                    fbInterID: myAdsIdClass.facebookInterstitialId,
-                    googleInterID: myAdsIdClass.googleInterstitialId);
+                provider.loadAdxInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, context: context, fbInterID: myAdsIdClass.facebookInterstitialId, googleInterID: myAdsIdClass.googleInterstitialId);
               }
             }
           }
@@ -260,9 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void dispose() {
-    if (receiver != null) {
-      receiver.cancel();
-    }
+    receiver.cancel();
 
     super.dispose();
     if (adxNativeAd != null) {
@@ -274,8 +222,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isAdxNativeAdLoaded = false;
 
   loadAdxNativeAd({String isCalledFrom = 'init'}) async {
-    print(
-        'Screen name loadNativeAd() ---> $screenName isCalledFrom --> $isCalledFrom ');
+    print('Screen name loadNativeAd() ---> $screenName isCalledFrom --> $isCalledFrom ');
 
     String nativeAdId = myAdsIdClass.googleNativeId;
     // AdsUnitId().getGoogleNativeAdId();
@@ -308,12 +255,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         SafeArea(
           child: Container(
-            decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-                        color:
-                            ColorUtils.themeColor.oxff858494.withOpacity(0.2))),
-                color: Colors.transparent),
+            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: ColorUtils.themeColor.oxff858494.withOpacity(0.2))), color: Colors.transparent),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Row(
@@ -321,8 +263,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   Text(
                     LocaleKeys.MyAccount.tr(),
-                    style: FontUtils.h16(
-                        fontWeight: FWT.semiBold, letterSpacing: 2),
+                    style: FontUtils.h16(fontWeight: FWT.semiBold, letterSpacing: 2),
                   ),
                   const LottieAdWidget(lottieURL: AssetUtils.icProfile),
                 ],
@@ -341,8 +282,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 10),
                   ProfileButtonWidget(
                     onTap: () {
-                      final url = Uri.parse(
-                          "market://details?id=com.loan.fundmentor_aa_credit_aa_kredit_loan_guide_instant_loan_smartcoin_personal_app_navi_loan_guide_app_instant_personal_loan_advisor_quick_loan");
+                      final url = Uri.parse("market://details?id=com.loan.fundmentor_aa_credit_aa_kredit_loan_guide_instant_loan_smartcoin_personal_app_navi_loan_guide_app_instant_personal_loan_advisor_quick_loan");
                       launchUrl(url);
                     },
                     titleWidget: Icon(
@@ -355,10 +295,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ProfileButtonWidget(
                     onTap: () async {
                       if (Platform.isAndroid) {
-                        await LaunchReview.launch(
-                            androidAppId:
-                                'com.loan.fundmentor_aa_credit_aa_kredit_loan_guide_instant_loan_smartcoin_personal_app_navi_loan_guide_app_instant_personal_loan_advisor_quick_loan',
-                            writeReview: true);
+                        final url = Uri.parse("market://details?id=com.loan.fundmentor_aa_credit_aa_kredit_loan_guide_instant_loan_smartcoin_personal_app_navi_loan_guide_app_instant_personal_loan_advisor_quick_loan");
+                        launchUrl(url);
                       } else if (Platform.isIOS) {}
                     },
                     titleWidget: Icon(
@@ -370,8 +308,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 10),
                   ProfileButtonWidget(
                     onTap: () {
-                      Share.share(
-                          'Check out this loan APP :\nhttps://play.google.com/store/apps/details?id=com.loan.fundmentor_aa_credit_aa_kredit_loan_guide_instant_loan_smartcoin_personal_app_navi_loan_guide_app_instant_personal_loan_advisor_quick_loan');
+                      Share.share('Check out this loan APP :\nhttps://play.google.com/store/apps/details?id=com.loan.fundmentor_aa_credit_aa_kredit_loan_guide_instant_loan_smartcoin_personal_app_navi_loan_guide_app_instant_personal_loan_advisor_quick_loan');
                     },
                     titleWidget: Icon(
                       Icons.share_outlined,
@@ -382,8 +319,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 10),
                   ProfileButtonWidget(
                     onTap: () {
-                      Navigator.pushNamed(
-                          context, RouteUtils.privacyPoliciesLoanScreen);
+                      Navigator.pushNamed(context, RouteUtils.privacyPoliciesLoanScreen);
                     },
                     titleWidget: Icon(
                       Icons.privacy_tip_outlined,
@@ -394,8 +330,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 10),
                   ProfileButtonWidget(
                     onTap: () {
-                      Navigator.pushNamed(
-                          context, RouteUtils.termsAndConditionScreen);
+                      Navigator.pushNamed(context, RouteUtils.termsAndConditionScreen);
                     },
                     titleWidget: Icon(
                       Icons.library_books_outlined,
@@ -406,18 +341,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 10),
                   ProfileButtonWidget(
                     onTap: () {
-                      if (EasyLocalization.of(context)?.currentLocale ==
-                          const Locale('en', 'US')) {
-                        EasyLocalization.of(context)
-                            ?.setLocale(const Locale('hi', 'IN'));
-                        StorageUtils.prefs.setInt(
-                            StorageKeyUtils.applicationLanguageState, 1);
-                      } else if (EasyLocalization.of(context)?.currentLocale ==
-                          const Locale('hi', 'IN')) {
-                        EasyLocalization.of(context)
-                            ?.setLocale(const Locale('en', 'US'));
-                        StorageUtils.prefs.setInt(
-                            StorageKeyUtils.applicationLanguageState, 0);
+                      if (EasyLocalization.of(context)?.currentLocale == const Locale('en', 'US')) {
+                        EasyLocalization.of(context)?.setLocale(const Locale('hi', 'IN'));
+                        StorageUtils.prefs.setInt(StorageKeyUtils.applicationLanguageState, 1);
+                      } else if (EasyLocalization.of(context)?.currentLocale == const Locale('hi', 'IN')) {
+                        EasyLocalization.of(context)?.setLocale(const Locale('en', 'US'));
+                        StorageUtils.prefs.setInt(StorageKeyUtils.applicationLanguageState, 0);
                       }
                       setState(() {
                         isLangSwitchValue = !isLangSwitchValue;
@@ -435,26 +364,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           borderRadius: 30.0,
                           activeColor: const Color(0xff673AB7),
                           inactiveColor: const Color(0xff673AB7),
-                          activeIcon: const Image(
-                              image: AssetImage(AssetUtils.hinLogo),
-                              fit: BoxFit.cover),
-                          inactiveIcon: const Image(
-                              image: AssetImage(AssetUtils.engLogo),
-                              fit: BoxFit.cover),
+                          activeIcon: const Image(image: AssetImage(AssetUtils.hinLogo), fit: BoxFit.cover),
+                          inactiveIcon: const Image(image: AssetImage(AssetUtils.engLogo), fit: BoxFit.cover),
                           onToggle: (val) {
-                            if (EasyLocalization.of(context)?.currentLocale ==
-                                const Locale('en', 'US')) {
-                              EasyLocalization.of(context)
-                                  ?.setLocale(const Locale('hi', 'IN'));
-                              StorageUtils.prefs.setInt(
-                                  StorageKeyUtils.applicationLanguageState, 1);
-                            } else if (EasyLocalization.of(context)
-                                    ?.currentLocale ==
-                                const Locale('hi', 'IN')) {
-                              EasyLocalization.of(context)
-                                  ?.setLocale(const Locale('en', 'US'));
-                              StorageUtils.prefs.setInt(
-                                  StorageKeyUtils.applicationLanguageState, 0);
+                            if (EasyLocalization.of(context)?.currentLocale == const Locale('en', 'US')) {
+                              EasyLocalization.of(context)?.setLocale(const Locale('hi', 'IN'));
+                              StorageUtils.prefs.setInt(StorageKeyUtils.applicationLanguageState, 1);
+                            } else if (EasyLocalization.of(context)?.currentLocale == const Locale('hi', 'IN')) {
+                              EasyLocalization.of(context)?.setLocale(const Locale('en', 'US'));
+                              StorageUtils.prefs.setInt(StorageKeyUtils.applicationLanguageState, 0);
                             }
                             setState(() {
                               isLangSwitchValue = val;

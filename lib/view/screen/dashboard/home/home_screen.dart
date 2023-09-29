@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:action_broadcast/action_broadcast.dart';
@@ -67,6 +68,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     initReceiver();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+     if (!kDebugMode) {
+        await FirebaseAnalytics.instance.logEvent(name: screenName);
+      }
       setState(() {
         int prefferedLanguage = StorageUtils.prefs
                 .getInt(StorageKeyUtils.applicationLanguageState) ??
@@ -533,15 +537,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                             ),
-                            Positioned(
-                              left: 20,
-                              top: 60,
-                              child: Text(
-                                'FD\nCALCULATOR',
-                                textAlign: TextAlign.center,
-                                style: FontUtils.h26(fontWeight: FWT.bold),
-                              ),
-                            ),
+                            // Positioned(
+                            //   left: 20,
+                            //   top: 60,
+                            //   child: Text(
+                            //     'FD\nCALCULATOR',
+                            //     textAlign: TextAlign.center,
+                            //     style: FontUtils.h26(fontWeight: FWT.bold),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),
