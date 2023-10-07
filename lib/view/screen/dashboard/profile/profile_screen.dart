@@ -47,7 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     initReceiver();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-     if (!kDebugMode) {
+      if (!kDebugMode) {
         await FirebaseAnalytics.instance.logEvent(name: screenName);
       }
       final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
@@ -282,7 +282,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 10),
                   ProfileButtonWidget(
                     onTap: () {
-                      final url = Uri.parse("market://details?id=com.loan.fundmentor_aa_credit_aa_kredit_loan_guide_instant_loan_smartcoin_personal_app_navi_loan_guide_app_instant_personal_loan_advisor_quick_loan");
+                      final url = Uri.parse("market://details?id=com.quick_loan_credit_card_advisor");
                       launchUrl(url);
                     },
                     titleWidget: Icon(
@@ -295,7 +295,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ProfileButtonWidget(
                     onTap: () async {
                       if (Platform.isAndroid) {
-                        final url = Uri.parse("market://details?id=com.loan.fundmentor_aa_credit_aa_kredit_loan_guide_instant_loan_smartcoin_personal_app_navi_loan_guide_app_instant_personal_loan_advisor_quick_loan");
+                        final url = Uri.parse("market://details?id=com.quick_loan_credit_card_advisor");
                         launchUrl(url);
                       } else if (Platform.isIOS) {}
                     },
@@ -308,7 +308,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 10),
                   ProfileButtonWidget(
                     onTap: () {
-                      Share.share('Check out this loan APP :\nhttps://play.google.com/store/apps/details?id=com.loan.fundmentor_aa_credit_aa_kredit_loan_guide_instant_loan_smartcoin_personal_app_navi_loan_guide_app_instant_personal_loan_advisor_quick_loan');
+                      Share.share('Check out this loan APP :\nhttps://play.google.com/store/apps/details?id=com.quick_loan_credit_card_advisor');
                     },
                     titleWidget: Icon(
                       Icons.share_outlined,

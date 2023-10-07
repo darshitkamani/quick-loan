@@ -28,21 +28,14 @@ class DashboardScreen extends StatefulWidget {
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen>
-    with WidgetsBindingObserver {
+class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingObserver {
   int selectedIndex = 0;
   String screenName = "DashboardScreen";
-  bool isFacebookAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
-  bool isADXAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
-  bool isAdmobAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
-  bool isAdShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
-  bool isCheckScreen =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isCheckScreenForAdInApp) ??
-          false;
+  bool isFacebookAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
+  bool isADXAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
+  bool isAdmobAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
+  bool isAdShow = StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
+  bool isCheckScreen = StorageUtils.prefs.getBool(StorageKeyUtils.isCheckScreenForAdInApp) ?? false;
 
   // List<String> availableAdsList = [];
   MyAdsIdClass myAdsIdClass = MyAdsIdClass();
@@ -57,70 +50,46 @@ class _DashboardScreenState extends State<DashboardScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-     if (!kDebugMode) {
+      if (!kDebugMode) {
         await FirebaseAnalytics.instance.logEvent(name: screenName);
       }
       WidgetsBinding.instance.addObserver(this);
 
       // final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
-      final appOpenProvider =
-          Provider.of<AppOpenAdWidgetProvider>(context, listen: false);
+      final appOpenProvider = Provider.of<AppOpenAdWidgetProvider>(context, listen: false);
 
-      myAdsIdClass = await LoadAdsByApi()
-          .isAvailableAds(context: context, screenName: screenName);
-      myAdsIdClassForHomeScreen = await LoadAdsByApi()
-          .isAvailableAds(context: context, screenName: 'HomeScreen');
-      myAdsIdClassForHomeTab = await LoadAdsByApi()
-          .isAvailableAds(context: context, screenName: 'HomeBot');
-      myAdsIdClassForProfileTab = await LoadAdsByApi()
-          .isAvailableAds(context: context, screenName: 'ProfileBot');
-      myAdsIdClassForLoanTab = await LoadAdsByApi()
-          .isAvailableAds(context: context, screenName: 'LoanBot');
-      myAdsIdClassForCalTab = await LoadAdsByApi()
-          .isAvailableAds(context: context, screenName: 'CalculatorBot');
-      didChangeAppScreen = await LoadAdsByApi()
-          .isAvailableAds(context: context, screenName: 'DidChangeApp');
+      myAdsIdClass = await LoadAdsByApi().isAvailableAds(context: context, screenName: screenName);
+      myAdsIdClassForHomeScreen = await LoadAdsByApi().isAvailableAds(context: context, screenName: 'HomeScreen');
+      myAdsIdClassForHomeTab = await LoadAdsByApi().isAvailableAds(context: context, screenName: 'HomeBot');
+      myAdsIdClassForProfileTab = await LoadAdsByApi().isAvailableAds(context: context, screenName: 'ProfileBot');
+      myAdsIdClassForLoanTab = await LoadAdsByApi().isAvailableAds(context: context, screenName: 'LoanBot');
+      myAdsIdClassForCalTab = await LoadAdsByApi().isAvailableAds(context: context, screenName: 'CalculatorBot');
+      didChangeAppScreen = await LoadAdsByApi().isAvailableAds(context: context, screenName: 'DidChangeApp');
       setState(() {});
 
       if (isAdShow) {
         if (isCheckScreen) {
-          print(
-              ' if from isCheckScreen $isCheckScreen --> screenName --> $screenName');
-          print(
-              'if from  myAdsIdClass.isGoogle screenName --> $screenName --> ${myAdsIdClass.isGoogle}');
+          print(' if from isCheckScreen $isCheckScreen --> screenName --> $screenName');
+          print('if from  myAdsIdClass.isGoogle screenName --> $screenName --> ${myAdsIdClass.isGoogle}');
           if (myAdsIdClass.isGoogle) {
-            appOpenProvider.loadAd(
-                screenName: screenName,
-                isShowAd: true,
-                googleId: myAdsIdClass.googleAppOpenId);
+            appOpenProvider.loadAd(screenName: screenName, isShowAd: true, googleId: myAdsIdClass.googleAppOpenId);
             return;
           }
-          print(
-              ' if from  myAdsIdClass.isFacebook screenName --> $screenName --> ${myAdsIdClass.isFacebook}');
+          print(' if from  myAdsIdClass.isFacebook screenName --> $screenName --> ${myAdsIdClass.isFacebook}');
 
           if (myAdsIdClass.isFacebook) {
             if (widget.routeName != 'Clarification') {
               InterstitialAdsForDash.loadHomeScreenIds(context: context);
-              InterstitialAdsForDash.loadFBInterstitialAd(
-                  routeFrom: widget.routeName,
-                  context: context,
-                  screenName: screenName,
-                  googleID: myAdsIdClass.googleInterstitialId,
-                  myAdsIdClass: myAdsIdClass,
-                  fbID: myAdsIdClass.facebookInterstitialId);
+              InterstitialAdsForDash.loadFBInterstitialAd(routeFrom: widget.routeName, context: context, screenName: screenName, googleID: myAdsIdClass.googleInterstitialId, myAdsIdClass: myAdsIdClass, fbID: myAdsIdClass.facebookInterstitialId);
             }
           }
         } else {
-          print(
-              'else from myAdsIdClass.isGoogle screenName --> $screenName --> myAdsIdClass.isGoogle ${myAdsIdClass.isGoogle} myAdsIdClass.isFacebook --> ${myAdsIdClass.isGoogle}  isAdmob $isADXAdsShow isFacebook $isFacebookAdsShow');
+          print('else from myAdsIdClass.isGoogle screenName --> $screenName --> myAdsIdClass.isGoogle ${myAdsIdClass.isGoogle} myAdsIdClass.isFacebook --> ${myAdsIdClass.isGoogle}  isAdmob $isADXAdsShow isFacebook $isFacebookAdsShow');
 
           if (myAdsIdClass.availableAdsList.contains('AppOpen')) {
             if (widget.routeName == 'SplashScreen') {
               if (myAdsIdClass.isGoogle) {
-                appOpenProvider.loadAd(
-                    screenName: screenName,
-                    isShowAd: true,
-                    googleId: myAdsIdClass.googleAppOpenId);
+                appOpenProvider.loadAd(screenName: screenName, isShowAd: true, googleId: myAdsIdClass.googleAppOpenId);
                 return;
               }
             }
@@ -128,13 +97,7 @@ class _DashboardScreenState extends State<DashboardScreen>
               print("widget.routeName --> ${widget.routeName}");
               if (widget.routeName != 'Clarification') {
                 InterstitialAdsForDash.loadHomeScreenIds(context: context);
-                InterstitialAdsForDash.loadFBInterstitialAd(
-                    routeFrom: widget.routeName,
-                    context: context,
-                    screenName: screenName,
-                    googleID: myAdsIdClass.googleInterstitialId,
-                    myAdsIdClass: myAdsIdClass,
-                    fbID: myAdsIdClass.facebookInterstitialId);
+                InterstitialAdsForDash.loadFBInterstitialAd(routeFrom: widget.routeName, context: context, screenName: screenName, googleID: myAdsIdClass.googleInterstitialId, myAdsIdClass: myAdsIdClass, fbID: myAdsIdClass.facebookInterstitialId);
               }
             }
           }
@@ -154,69 +117,40 @@ class _DashboardScreenState extends State<DashboardScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    isFacebookAdsShow =
-        StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
-    isADXAdsShow =
-        StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
-    isAdmobAdsShow =
-        StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
-    isAdShow =
-        StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
-    debugPrint(
-        'STATE ----->>>>>> ${state.name} isCheckScreen $isCheckScreen isNeedToCheckAddLoad $isNeedToCheckAddLoad. . . . . . . . . . . .');
+    isFacebookAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
+    isADXAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
+    isAdmobAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
+    isAdShow = StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
+    debugPrint('STATE ----->>>>>> ${state.name} isCheckScreen $isCheckScreen isNeedToCheckAddLoad $isNeedToCheckAddLoad. . . . . . . . . . . .');
     if (state == AppLifecycleState.resumed) {
       if (isAdShow) {
-        print(
-            "STATE ----->>>>>> isFacebookAdsShow --> $isFacebookAdsShow isAdmobAdsShow || isADXAdsShow --> $isAdmobAdsShow didChangeAppScreen.isGoogle --> ${didChangeAppScreen.isGoogle} didChangeAppScreen.isFacebook --> ${didChangeAppScreen.isFacebook}");
+        print("STATE ----->>>>>> isFacebookAdsShow --> $isFacebookAdsShow isAdmobAdsShow || isADXAdsShow --> $isAdmobAdsShow didChangeAppScreen.isGoogle --> ${didChangeAppScreen.isGoogle} didChangeAppScreen.isFacebook --> ${didChangeAppScreen.isFacebook}");
         if (isNeedToCheckAddLoad) {
           if (isCheckScreen) {
             if (didChangeAppScreen.isFacebook) {
-              final provider = Provider.of<InterstitialAdsWidgetProvider>(
-                  context,
-                  listen: false);
-              provider.loadFBInterstitialAd(
-                  myAdsIdClass: myAdsIdClass,
-                  screenName: screenName,
-                  context: context,
-                  fbID: myAdsIdClass.facebookInterstitialId,
-                  googleID: myAdsIdClass.googleInterstitialId);
+              final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+              provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, context: context, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
               // loadFBInterstitialAd(
               //     screenName: '',
               //     fbID: myAdsIdClass.facebookInterstitialId,
               //     googleID: myAdsIdClass.googleInterstitialId);
             }
             if (didChangeAppScreen.isGoogle) {
-              final appOpenProvider =
-                  Provider.of<AppOpenAdWidgetProvider>(context, listen: false);
-              appOpenProvider.loadAd(
-                  screenName: screenName,
-                  isShowAd: true,
-                  googleId: didChangeAppScreen.googleAppOpenId);
+              final appOpenProvider = Provider.of<AppOpenAdWidgetProvider>(context, listen: false);
+              appOpenProvider.loadAd(screenName: screenName, isShowAd: true, googleId: didChangeAppScreen.googleAppOpenId);
               isNeedToCheckAddLoad = false;
             }
           } else {
             if (didChangeAppScreen.availableAdsList.contains('AppOpen')) {
               if ((didChangeAppScreen.isGoogle)) {
-                final appOpenProvider = Provider.of<AppOpenAdWidgetProvider>(
-                    context,
-                    listen: false);
-                appOpenProvider.loadAd(
-                    screenName: screenName,
-                    isShowAd: true,
-                    googleId: didChangeAppScreen.googleAppOpenId);
+                final appOpenProvider = Provider.of<AppOpenAdWidgetProvider>(context, listen: false);
+                appOpenProvider.loadAd(screenName: screenName, isShowAd: true, googleId: didChangeAppScreen.googleAppOpenId);
                 isNeedToCheckAddLoad = false;
                 return;
               }
               if (didChangeAppScreen.isFacebook && isFacebookAdsShow) {
-                final provider = Provider.of<InterstitialAdsWidgetProvider>(
-                    context,
-                    listen: false);
-                provider.loadFBInterstitialAd(
-                    myAdsIdClass: didChangeAppScreen,
-                    screenName: screenName,
-                    context: context,
-                    fbID: myAdsIdClass.facebookInterstitialId,
-                    googleID: myAdsIdClass.googleInterstitialId);
+                final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+                provider.loadFBInterstitialAd(myAdsIdClass: didChangeAppScreen, screenName: screenName, context: context, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
                 // loadFBInterstitialAd(
                 //     screenName: '',
                 //     fbID: myAdsIdClass.facebookInterstitialId,
@@ -242,15 +176,10 @@ class _DashboardScreenState extends State<DashboardScreen>
     return WillPopScope(
       onWillPop: () async {
         DateTime currentTime = DateTime.now();
-        bool backButton = backButtonPressedTime == null ||
-            currentTime.difference(backButtonPressedTime!) >
-                const Duration(seconds: 1);
+        bool backButton = backButtonPressedTime == null || currentTime.difference(backButtonPressedTime!) > const Duration(seconds: 1);
         if (backButton) {
           backButtonPressedTime = currentTime;
-          Fluttertoast.showToast(
-              msg: "Swipe again to exit",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM);
+          Fluttertoast.showToast(msg: "Swipe again to exit", toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.BOTTOM);
           return false;
         }
         return true;
@@ -260,29 +189,17 @@ class _DashboardScreenState extends State<DashboardScreen>
         body: getScreen(),
         bottomNavigationBar: BottomNavigationBar(
           items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-                icon: const Icon(Icons.home_sharp),
-                label: LocaleKeys.HOME.tr()),
-            BottomNavigationBarItem(
-                icon: const Icon(Icons.calculate_rounded),
-                label: LocaleKeys.Calculator.tr()),
-            BottomNavigationBarItem(
-                icon: const Icon(Icons.dashboard),
-                label: LocaleKeys.MoreLoans.tr()),
+            BottomNavigationBarItem(icon: const Icon(Icons.home_sharp), label: LocaleKeys.HOME.tr()),
+            BottomNavigationBarItem(icon: const Icon(Icons.calculate_rounded), label: LocaleKeys.Calculator.tr()),
+            BottomNavigationBarItem(icon: const Icon(Icons.dashboard), label: LocaleKeys.MoreLoans.tr()),
             // BottomNavigationBarItem(icon: Icon(Icons.arrow_outward_rounded), label: 'Invest'),
-            BottomNavigationBarItem(
-                icon: const Icon(Icons.person), label: LocaleKeys.Profile.tr()),
+            BottomNavigationBarItem(icon: const Icon(Icons.person), label: LocaleKeys.Profile.tr()),
           ],
           currentIndex: selectedIndex,
           selectedItemColor: ColorUtils.themeColor.oxff673AB7,
-          unselectedItemColor:
-              ColorUtils.themeColor.oxff000000.withOpacity(0.6),
-          unselectedLabelStyle: FontUtils.h12(
-              fontColor: ColorUtils.themeColor.oxff000000.withOpacity(0.6),
-              fontWeight: FWT.semiBold),
-          selectedLabelStyle: FontUtils.h14(
-              fontColor: ColorUtils.themeColor.oxff673AB7,
-              fontWeight: FWT.bold),
+          unselectedItemColor: ColorUtils.themeColor.oxff000000.withOpacity(0.6),
+          unselectedLabelStyle: FontUtils.h12(fontColor: ColorUtils.themeColor.oxff000000.withOpacity(0.6), fontWeight: FWT.semiBold),
+          selectedLabelStyle: FontUtils.h14(fontColor: ColorUtils.themeColor.oxff673AB7, fontWeight: FWT.bold),
           showUnselectedLabels: true,
           type: BottomNavigationBarType.fixed,
           onTap: (int value) {
@@ -292,8 +209,7 @@ class _DashboardScreenState extends State<DashboardScreen>
             setState(() {
               selectedIndex = value;
             });
-            final provider = Provider.of<InterstitialAdsWidgetProvider>(context,
-                listen: false);
+            final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
 
             switch (value) {
               case 0:
