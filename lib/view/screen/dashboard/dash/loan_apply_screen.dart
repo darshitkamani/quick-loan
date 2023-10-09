@@ -28,7 +28,7 @@ class _LoanApplyScreenState extends State<LoanApplyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: ColorUtils.themeColor.oxff673AB7,
+        backgroundColor: ColorUtils.themeColor.oxff447D58,
         automaticallyImplyLeading: false,
         leading: IconButton(
             onPressed: () {
@@ -129,8 +129,8 @@ class _LoanApplyScreenState extends State<LoanApplyScreen> {
                           width: 10,
                           decoration: BoxDecoration(
                             color: currentPage == index
-                                ? ColorUtils.themeColor.oxff673AB7
-                                : ColorUtils.themeColor.oxff673AB7
+                                ? ColorUtils.themeColor.oxff447D58
+                                : ColorUtils.themeColor.oxff447D58
                                     .withOpacity(0.4),
                             shape: BoxShape.circle,
                           ),

@@ -64,6 +64,7 @@
 //       }
 
 //       if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        // print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
 //         if (isFacebookAdsShow) {
 //           provider.loadFBInterstitialAd(
 //               screenName: screenName,
@@ -93,6 +94,7 @@
 //           setState(() {});
 
 //           if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        // print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
 //             if (isFacebookAdsShow) {
 //               provider.loadFBInterstitialAd(
 //                   screenName: screenName,
@@ -171,7 +173,7 @@
 //       setState(() {
 //         adxNativeAd = NativeAd(
 //           adUnitId: nativeAdId,
-//           factoryId: 'adFactory',
+//           factoryId: 'listTileMedium',
 //           request: const AdRequest(),
 //           listener: NativeAdListener(
 //             onAdLoaded: (ad) {
@@ -220,7 +222,7 @@
 //                 ? const SizedBox()
 //                 : Container(
 //                     color: Colors.transparent,
-//                     height: 330,
+//                     height: 275,
 //                     alignment: Alignment.center,
 //                     child: AdWidget(ad: adxNativeAd!),
 //                   ),

@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -89,7 +88,7 @@ class _ConnectivityIndicatorWidgetState
                         "It seems like your internet connection is off.",
                         textAlign: TextAlign.center,
                         style: FontUtils.h16(
-                            fontColor: ColorUtils.themeColor.oxff673AB7,
+                            fontColor: ColorUtils.themeColor.oxff447D58,
                             fontWeight: FWT.medium),
                       ),
                     ),
@@ -162,9 +161,6 @@ class ConnectivityService {
         bool isUserFirstTime =
             StorageUtils.prefs.getBool(StorageKeyUtils.isUserFirstTime) ??
                 false;
-        if (kDebugMode) {
-          return;
-        }
         if (isUserFirstTime == false) {
           Timer(const Duration(seconds: 1), () async {
             String prefsAvailableScreens = StorageUtils.prefs
@@ -177,7 +173,7 @@ class ConnectivityService {
                 headers: {"secret_key": dotenv.get(EnvUtils.secretKey)},
               );
               if (res.statusCode == 200) {
-                print("ABC ===> DEF ");
+                // print("ABC ===> DEF ");
 
                 AvailableScreenAdsModel availableScreenAdsModel =
                     AvailableScreenAdsModel.fromJson(jsonDecode(res.body));

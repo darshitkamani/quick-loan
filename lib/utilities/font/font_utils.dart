@@ -60,7 +60,6 @@ class FontUtils {
       fontFamily: 'Barlow',
     );
   }
-
   static TextStyle h11({
     Color? fontColor,
     FWT fontWeight = FWT.regular,
@@ -72,7 +71,8 @@ class FontUtils {
       fontFamily: 'Barlow',
     );
   }
-   static TextStyle h12({
+
+  static TextStyle h12({
     Color? fontColor,
     FWT fontWeight = FWT.regular,
   }) {

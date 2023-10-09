@@ -64,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 'Simplify your financial needs and access instant solutions today.',
                 textAlign: TextAlign.center,
                 style: FontUtils.h14(
-                  fontColor: ColorUtils.themeColor.oxff673AB7,
+                  fontColor: ColorUtils.themeColor.oxff447D58,
                   fontWeight: FWT.bold,
                 ),
               ),

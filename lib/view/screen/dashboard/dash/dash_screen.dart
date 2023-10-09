@@ -69,9 +69,9 @@ class _DashScreenState extends State<DashScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 6),
           child: Container(
             decoration: BoxDecoration(
-              border: Border.all(color: ColorUtils.themeColor.oxff673AB7),
+              border: Border.all(color: ColorUtils.themeColor.oxff447D58),
               color: selectedIndex == index
-                  ? ColorUtils.themeColor.oxff673AB7
+                  ? ColorUtils.themeColor.oxff447D58
                   : Colors.transparent,
               borderRadius: BorderRadius.circular(10),
             ),

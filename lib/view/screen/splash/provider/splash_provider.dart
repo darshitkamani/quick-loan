@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,10 +17,8 @@ class SplashProvider extends ChangeNotifier {
     Future.delayed(
       const Duration(seconds: 3),
       () async {
-        // if (!kDebugMode) {
-          await getApiData(context: context);
-        // }
-        // Navigator.pushNamedAndRemoveUntil(context, RouteUtils.dashboardScreen, (route) => false);
+        await getApiData(context: context);
+
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
@@ -39,7 +36,7 @@ class SplashProvider extends ChangeNotifier {
         headers: {"secret_key": dotenv.get(EnvUtils.secretKey)},
       );
 
-      print(res.body);
+      // log(res.body);
 
       if (res.statusCode == 200) {
         AvailableScreenAdsModel availableScreenAdsModel =

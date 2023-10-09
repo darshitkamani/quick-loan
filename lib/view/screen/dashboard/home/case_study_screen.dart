@@ -1,11 +1,9 @@
-import 'dart:async';
-
+import 'package:action_broadcast/action_broadcast.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:action_broadcast/action_broadcast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:instant_pay/utilities/assets/asset_utils.dart';
 import 'package:instant_pay/utilities/colors/color_utils.dart';
@@ -14,7 +12,6 @@ import 'package:instant_pay/utilities/routes/routes.dart';
 import 'package:instant_pay/utilities/storage/storage.dart';
 import 'package:instant_pay/view/screen/dashboard/home/loan_short_description_screen.dart';
 import 'package:instant_pay/view/screen/dashboard/home/model/available_ads_response.dart';
-import 'package:instant_pay/view/widget/ads_widget/fb_native_add.dart';
 import 'package:instant_pay/view/widget/ads_widget/interstitial_ads_widget.dart';
 import 'package:instant_pay/view/widget/ads_widget/load_ads_by_api.dart';
 import 'package:instant_pay/view/widget/center_text_button_widget.dart';
@@ -36,18 +33,12 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
   String reasonToTakeLoan = "CaseStudy";
   String reasonToNotTakeLoan = "CaseStudy";
 
-  bool isFacebookAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
-  bool isADXAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
-  bool isAdmobAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
-  bool isAdShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
+  bool isFacebookAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
+  bool isADXAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
+  bool isAdmobAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
+  bool isAdShow = StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
 
-  bool isCheckScreen =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isCheckScreenForAdInApp) ??
-          false;
+  bool isCheckScreen = StorageUtils.prefs.getBool(StorageKeyUtils.isCheckScreenForAdInApp) ?? false;
 
   // List<String> availableAdsList = [];
   MyAdsIdClass myAdsIdClass = MyAdsIdClass();
@@ -58,27 +49,22 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-     if (!kDebugMode) {
+      if (!kDebugMode) {
         await FirebaseAnalytics.instance.logEvent(name: screenName);
       }
-      int prefferedLanguage =
-          StorageUtils.prefs.getInt(StorageKeyUtils.applicationLanguageState) ??
-              0;
+      int prefferedLanguage = StorageUtils.prefs.getInt(StorageKeyUtils.applicationLanguageState) ?? 0;
       if (prefferedLanguage == 0) {
         appBarTitle = 'Case Study On ${widget.arguments.loanName}';
         reasonToTakeLoan = 'Benefits of taking a ${widget.arguments.loanName}';
-        reasonToNotTakeLoan =
-            'Disadvantages of taking a ${widget.arguments.loanName}';
+        reasonToNotTakeLoan = 'Disadvantages of taking a ${widget.arguments.loanName}';
       } else {
         appBarTitle = '${widget.arguments.loanName} पर केस स्टडी';
         reasonToTakeLoan = '${widget.arguments.loanName} लेने के फायदे';
         reasonToNotTakeLoan = '${widget.arguments.loanName} लेने के नुकसान';
       }
-      final provider =
-          Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+      final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
 
-      myAdsIdClass = await LoadAdsByApi()
-          .isAvailableAds(context: context, screenName: screenName);
+      myAdsIdClass = await LoadAdsByApi().isAvailableAds(context: context, screenName: screenName);
 
       setState(() {});
       if (myAdsIdClass.availableAdsList.contains("Native")) {
@@ -101,29 +87,16 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
         }
       }
       if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
         if (isCheckScreen) {
-          provider.loadFBInterstitialAd(
-              myAdsIdClass: myAdsIdClass,
-              screenName: screenName,
-              fbID: myAdsIdClass.facebookInterstitialId,
-              googleID: myAdsIdClass.googleInterstitialId);
+          provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
         } else {
-          print(
-              "myAdsIdClass.isFacebook && isFacebookAdsShow interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
+          print("myAdsIdClass.isFacebook && isFacebookAdsShow interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
           if (myAdsIdClass.isFacebook && isFacebookAdsShow) {
-            provider.loadFBInterstitialAd(
-                myAdsIdClass: myAdsIdClass,
-                screenName: screenName,
-                fbID: myAdsIdClass.facebookInterstitialId,
-                googleID: myAdsIdClass.googleInterstitialId);
+            provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
           }
           if (myAdsIdClass.isGoogle && isADXAdsShow) {
-            provider.loadAdxInterstitialAd(
-                myAdsIdClass: myAdsIdClass,
-                screenName: screenName,
-                context: context,
-                fbInterID: myAdsIdClass.facebookInterstitialId,
-                googleInterID: myAdsIdClass.googleInterstitialId);
+            provider.loadAdxInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, context: context, fbInterID: myAdsIdClass.facebookInterstitialId, googleInterID: myAdsIdClass.googleInterstitialId);
           }
         }
       }
@@ -135,36 +108,21 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
       print('$screenName Data ----> ${intent.extras}');
       switch (intent.action) {
         case 'LoadAd':
-          final provider = Provider.of<InterstitialAdsWidgetProvider>(context,
-              listen: false);
-          myAdsIdClass = await LoadAdsByApi()
-              .isAvailableAds(context: context, screenName: screenName);
+          final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+          myAdsIdClass = await LoadAdsByApi().isAvailableAds(context: context, screenName: screenName);
           setState(() {});
 
           if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+            print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
             if (isCheckScreen) {
-              provider.loadFBInterstitialAd(
-                  myAdsIdClass: myAdsIdClass,
-                  screenName: screenName,
-                  fbID: myAdsIdClass.facebookInterstitialId,
-                  googleID: myAdsIdClass.googleInterstitialId);
+              provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
             } else {
-              print(
-                  "myAdsIdClass.isFacebook && isFacebookAdsShow in receiver interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
+              print("myAdsIdClass.isFacebook && isFacebookAdsShow in receiver interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
               if (myAdsIdClass.isFacebook && isFacebookAdsShow) {
-                provider.loadFBInterstitialAd(
-                    myAdsIdClass: myAdsIdClass,
-                    screenName: screenName,
-                    fbID: myAdsIdClass.facebookInterstitialId,
-                    googleID: myAdsIdClass.googleInterstitialId);
+                provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
               }
               if (myAdsIdClass.isGoogle && isADXAdsShow) {
-                provider.loadAdxInterstitialAd(
-                    myAdsIdClass: myAdsIdClass,
-                    screenName: screenName,
-                    context: context,
-                    fbInterID: myAdsIdClass.facebookInterstitialId,
-                    googleInterID: myAdsIdClass.googleInterstitialId);
+                provider.loadAdxInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, context: context, fbInterID: myAdsIdClass.facebookInterstitialId, googleInterID: myAdsIdClass.googleInterstitialId);
               }
             }
           }
@@ -177,9 +135,7 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
   Widget fbNativeBannerAd = const SizedBox();
   Widget fbNativeAd1 = const SizedBox();
   _showFBNativeAd({required String isCalledFrom}) {
-    bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool(
-            '${StorageKeyUtils.isFailedTwiceToLoadFbAdId}${myAdsIdClass.facebookNativeId}') ??
-        false;
+    bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}${myAdsIdClass.facebookNativeId}') ?? false;
 
     if (myAdsIdClass.facebookNativeId.isEmpty || isFailedTwiceToLoadFbAdId) {
       loadAdxNativeAd(isCalledFrom: isCalledFrom);
@@ -202,15 +158,10 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
 
   updatePrefsResponse({required String adType}) {
     Timer(const Duration(seconds: 1), () {
-      isFacebookAdsShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ??
-              false;
-      isADXAdsShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
-      isAdmobAdsShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
-      isAdShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
+      isFacebookAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
+      isADXAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
+      isAdmobAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
+      isAdShow = StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
       setState(() {});
       if (isAdmobAdsShow) {
         setState(() {
@@ -227,9 +178,7 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
   @override
   void dispose() {
     super.dispose();
-    if (receiver != null) {
-      receiver.cancel();
-    }
+    receiver.cancel();
 
     if (adxNativeAd != null) {
       adxNativeAd!.dispose();
@@ -240,15 +189,14 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
   bool _isAdxNativeAdLoaded = false;
 
   loadAdxNativeAd({String isCalledFrom = 'init'}) async {
-    print(
-        'Screen name loadNativeAd() ---> $screenName isCalledFrom --> $isCalledFrom ');
+    print('Screen name loadNativeAd() ---> $screenName isCalledFrom --> $isCalledFrom ');
     String nativeAdId = myAdsIdClass.googleNativeId;
     // AdsUnitId().getGoogleNativeAdId();
     if (nativeAdId != '') {
       setState(() {
         adxNativeAd = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -268,8 +216,7 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
   }
 
   Widget loadFbNativeAd(String adId, {String isCalledFrom = 'init'}) {
-    print(
-        'Screen name loadFbNativeAd() ---> $screenName isCalledFrom -->$isCalledFrom ');
+    print('Screen name loadFbNativeAd() ---> $screenName isCalledFrom -->$isCalledFrom ');
 
     String nativeAdId = adId;
     // AdsUnitId().getFacebookNativeAdId();
@@ -290,9 +237,9 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
       backgroundColor: const Color(0xFFFFE6C5),
       titleColor: Colors.black,
       descriptionColor: Colors.black,
-      buttonColor: const Color(0xff673AB7),
+      buttonColor: const Color(0xff447D58),
       buttonTitleColor: Colors.white,
-      buttonBorderColor: const Color(0xff673AB7),
+      buttonBorderColor: const Color(0xff447D58),
       listener: (result, value) {
         // print('---=- =-= -= -= -= - $result $value');
 
@@ -301,13 +248,10 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
           StorageUtils.prefs.setBool(StorageKeyUtils.isShowFacebookAds, false);
           StorageUtils.prefs.setBool(StorageKeyUtils.isShowADXAds, true);
           StorageUtils.prefs.setBool(StorageKeyUtils.isShowAdmobAds, true);
-          bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool(
-                  '${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId') ??
-              false;
+          bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId') ?? false;
 
           if (!isFailedTwiceToLoadFbAdId) {
-            StorageUtils.prefs.setBool(
-                '${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId', true);
+            StorageUtils.prefs.setBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId', true);
             loadAdxNativeAd(isCalledFrom: 'fbNativeFunction');
           }
         }
@@ -355,9 +299,7 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
                     const SizedBox(height: 10),
                     Text(
                       reasonToTakeLoan,
-                      style: FontUtils.h14(
-                          fontColor: ColorUtils.themeColor.oxff000000,
-                          fontWeight: FWT.bold),
+                      style: FontUtils.h14(fontColor: ColorUtils.themeColor.oxff000000, fontWeight: FWT.bold),
                       textAlign: TextAlign.center,
                     ),
                     Stack(
@@ -382,8 +324,7 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
                             color: Colors.green,
                             strokeWidth: 2,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 16),
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                               child: ListView.builder(
                                 padding: EdgeInsets.zero,
                                 physics: const NeverScrollableScrollPhysics(),
@@ -397,22 +338,16 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
                                     ),
                                     child: RichText(
                                       text: TextSpan(
-                                        text:
-                                            widget.arguments.takePoints![index],
-                                        style: FontUtils.h16(
-                                            fontWeight: FWT.bold,
-                                            fontColor: Colors.green),
+                                        text: widget.arguments.takePoints![index],
+                                        style: FontUtils.h16(fontWeight: FWT.bold, fontColor: Colors.green),
                                         children: <TextSpan>[
                                           TextSpan(
                                             text: ' : ',
-                                            style: FontUtils.h16(
-                                                fontWeight: FWT.bold,
-                                                fontColor: Colors.green),
+                                            style: FontUtils.h16(fontWeight: FWT.bold, fontColor: Colors.green),
                                           ),
                                           TextSpan(
                                             text: widget.arguments.take![index],
-                                            style: FontUtils.h12(
-                                                fontWeight: FWT.medium),
+                                            style: FontUtils.h12(fontWeight: FWT.medium),
                                           ),
                                         ],
                                       ),
@@ -431,16 +366,14 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
                         ? const SizedBox()
                         : Container(
                             color: Colors.transparent,
-                            height: 370,
+                            height: 275,
                             alignment: Alignment.center,
                             child: AdWidget(ad: adxNativeAd!),
                           ),
                     const SizedBox(height: 10),
                     Text(
                       reasonToNotTakeLoan,
-                      style: FontUtils.h14(
-                          fontColor: ColorUtils.themeColor.oxff000000,
-                          fontWeight: FWT.bold),
+                      style: FontUtils.h14(fontColor: ColorUtils.themeColor.oxff000000, fontWeight: FWT.bold),
                       textAlign: TextAlign.center,
                     ),
                     Stack(
@@ -465,8 +398,7 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
                             color: Colors.red,
                             strokeWidth: 2,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 16),
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
                               child: ListView.builder(
                                 padding: EdgeInsets.zero,
                                 itemCount: widget.arguments.notTake!.length,
@@ -480,23 +412,16 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
                                     ),
                                     child: RichText(
                                       text: TextSpan(
-                                        text: widget
-                                            .arguments.notTakePoints![index],
-                                        style: FontUtils.h16(
-                                            fontWeight: FWT.bold,
-                                            fontColor: Colors.red),
+                                        text: widget.arguments.notTakePoints![index],
+                                        style: FontUtils.h16(fontWeight: FWT.bold, fontColor: Colors.red),
                                         children: <TextSpan>[
                                           TextSpan(
                                             text: ' : ',
-                                            style: FontUtils.h16(
-                                                fontWeight: FWT.bold,
-                                                fontColor: Colors.red),
+                                            style: FontUtils.h16(fontWeight: FWT.bold, fontColor: Colors.red),
                                           ),
                                           TextSpan(
-                                            text: widget
-                                                .arguments.notTake![index],
-                                            style: FontUtils.h12(
-                                                fontWeight: FWT.medium),
+                                            text: widget.arguments.notTake![index],
+                                            style: FontUtils.h12(fontWeight: FWT.medium),
                                           ),
                                         ],
                                       ),
@@ -515,13 +440,8 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
                       title: 'NEXT',
                       onTap: () {
                         if (widget.arguments.isFromInvest == true) {
-                          final provider =
-                              Provider.of<InterstitialAdsWidgetProvider>(
-                                  context,
-                                  listen: false);
-                          if (receiver != null) {
-                            receiver.cancel();
-                          }
+                          final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+                          receiver.cancel();
 
                           provider.showFbOrAdxOrAdmobInterstitialAd(
                             myAdsIdClass: myAdsIdClass,
@@ -532,13 +452,8 @@ class _CaseStudyScreenState extends State<CaseStudyScreen> {
                             googleInterID: myAdsIdClass.googleInterstitialId,
                           );
                         } else {
-                          final provider =
-                              Provider.of<InterstitialAdsWidgetProvider>(
-                                  context,
-                                  listen: false);
-                          if (receiver != null) {
-                            receiver.cancel();
-                          }
+                          final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+                          receiver.cancel();
 
                           provider.showFbOrAdxOrAdmobInterstitialAd(
                             myAdsIdClass: myAdsIdClass,

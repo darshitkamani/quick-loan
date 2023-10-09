@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "1028585611547",
-    "project_id": "credit-card-advisor-df286",
-    "storage_bucket": "credit-card-advisor-df286.appspot.com"
+    "project_number": "128392373825",
+    "project_id": "instant-pay-b5fd5",
+    "storage_bucket": "instant-pay-b5fd5.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1028585611547:android:cd50ff4c4dc2012b25b3be",
+        "mobilesdk_app_id": "1:128392373825:android:5d583dcb6ea9ee7a8fc8c0",
         "android_client_info": {
           "package_name": "com.quick_loan_credit_card_advisor"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBJbeTvyPVlEXiG21sjfSJ8jKsnCuDWuUo"
+          "current_key": "AIzaSyDhshCWx4_Zr4Ut_txyLiZvtcMFkTj1J2A"
         }
       ],
       "services": {

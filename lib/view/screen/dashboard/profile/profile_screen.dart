@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:action_broadcast/action_broadcast.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
@@ -79,6 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
       }
       if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
         if (isCheckScreen) {
           provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
         } else {
@@ -139,9 +138,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: const Color(0xFFFFE6C5),
       titleColor: Colors.black,
       descriptionColor: Colors.black,
-      buttonColor: const Color(0xff673AB7),
+      buttonColor: const Color(0xff447D58),
       buttonTitleColor: Colors.white,
-      buttonBorderColor: const Color(0xff673AB7),
+      buttonBorderColor: const Color(0xff447D58),
       listener: (result, value) {
         // print('---=- =-= -= -= -= - $result $value');
 
@@ -190,6 +189,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           setState(() {});
 
           if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+            print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
             if (isCheckScreen) {
               provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
             } else {
@@ -230,7 +230,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         adxNativeAd = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -294,10 +294,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const SizedBox(height: 10),
                   ProfileButtonWidget(
                     onTap: () async {
-                      if (Platform.isAndroid) {
-                        final url = Uri.parse("market://details?id=com.quick_loan_credit_card_advisor");
-                        launchUrl(url);
-                      } else if (Platform.isIOS) {}
+                      final url = Uri.parse("market://details?id=com.quick_loan_credit_card_advisor");
+                      launchUrl(url);
                     },
                     titleWidget: Icon(
                       Icons.thumb_up_off_alt,
@@ -362,8 +360,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           toggleSize: 25.0,
                           value: isLangSwitchValue,
                           borderRadius: 30.0,
-                          activeColor: const Color(0xff673AB7),
-                          inactiveColor: const Color(0xff673AB7),
+                          activeColor: const Color(0xff447D58),
+                          inactiveColor: const Color(0xff447D58),
                           activeIcon: const Image(image: AssetImage(AssetUtils.hinLogo), fit: BoxFit.cover),
                           inactiveIcon: const Image(image: AssetImage(AssetUtils.engLogo), fit: BoxFit.cover),
                           onToggle: (val) {
@@ -393,7 +391,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ? const SizedBox()
                       : Container(
                           color: Colors.transparent,
-                          height: 330,
+                          height: 275,
                           alignment: Alignment.center,
                           child: AdWidget(ad: adxNativeAd!),
                         ),

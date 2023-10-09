@@ -1,8 +1,8 @@
-import 'dart:async';
-
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/material.dart';
 import 'package:action_broadcast/action_broadcast.dart';
+import 'package:facebook_audience_network/facebook_audience_network.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:instant_pay/utilities/colors/color_utils.dart';
 import 'package:instant_pay/utilities/font/font_utils.dart';
@@ -10,41 +10,30 @@ import 'package:instant_pay/utilities/routes/route_utils.dart';
 import 'package:instant_pay/utilities/storage/storage.dart';
 import 'package:instant_pay/view/screen/dashboard/home/loan_short_description_screen.dart';
 import 'package:instant_pay/view/screen/dashboard/home/model/available_ads_response.dart';
-import 'package:instant_pay/view/widget/ads_widget/fb_native_add.dart';
 import 'package:instant_pay/view/widget/ads_widget/interstitial_ads_widget.dart';
 import 'package:instant_pay/view/widget/ads_widget/load_ads_by_api.dart';
 import 'package:instant_pay/view/widget/center_text_button_widget.dart';
 import 'package:provider/provider.dart';
-
-import 'package:facebook_audience_network/facebook_audience_network.dart';
-import 'package:flutter/foundation.dart';
 
 class LoanFullDescriptionScreen extends StatefulWidget {
   final LoanDescriptionArguments arguments;
   const LoanFullDescriptionScreen({super.key, required this.arguments});
 
   @override
-  State<LoanFullDescriptionScreen> createState() =>
-      _LoanFullDescriptionScreenState();
+  State<LoanFullDescriptionScreen> createState() => _LoanFullDescriptionScreenState();
 }
 
 class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
   String screenName = "LoanDetails";
   // List<String> availableAdsList = [];
   MyAdsIdClass myAdsIdClass = MyAdsIdClass();
-  bool isFacebookAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
-  bool isADXAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
-  bool isAdmobAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
-  bool isAdShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
+  bool isFacebookAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
+  bool isADXAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
+  bool isAdmobAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
+  bool isAdShow = StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
   late StreamSubscription receiver;
 
-  bool isCheckScreen =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isCheckScreenForAdInApp) ??
-          false;
+  bool isCheckScreen = StorageUtils.prefs.getBool(StorageKeyUtils.isCheckScreenForAdInApp) ?? false;
 
   @override
   void initState() {
@@ -52,13 +41,11 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
     initReceiver();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-     if (!kDebugMode) {
+      if (!kDebugMode) {
         await FirebaseAnalytics.instance.logEvent(name: screenName);
       }
-      final provider =
-          Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
-      myAdsIdClass = await LoadAdsByApi()
-          .isAvailableAds(context: context, screenName: screenName);
+      final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+      myAdsIdClass = await LoadAdsByApi().isAvailableAds(context: context, screenName: screenName);
       setState(() {});
       if (myAdsIdClass.availableAdsList.contains("Native")) {
         // if (isFacebookAdsShow) {
@@ -79,29 +66,16 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
         }
       }
       if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
         if (isCheckScreen) {
-          provider.loadFBInterstitialAd(
-              myAdsIdClass: myAdsIdClass,
-              screenName: screenName,
-              fbID: myAdsIdClass.facebookInterstitialId,
-              googleID: myAdsIdClass.googleInterstitialId);
+          provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
         } else {
-          print(
-              "myAdsIdClass.isFacebook && isFacebookAdsShow interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
+          print("myAdsIdClass.isFacebook && isFacebookAdsShow interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
           if (myAdsIdClass.isFacebook && isFacebookAdsShow) {
-            provider.loadFBInterstitialAd(
-                myAdsIdClass: myAdsIdClass,
-                screenName: screenName,
-                fbID: myAdsIdClass.facebookInterstitialId,
-                googleID: myAdsIdClass.googleInterstitialId);
+            provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
           }
           if (myAdsIdClass.isGoogle && isADXAdsShow) {
-            provider.loadAdxInterstitialAd(
-                myAdsIdClass: myAdsIdClass,
-                screenName: screenName,
-                context: context,
-                fbInterID: myAdsIdClass.facebookInterstitialId,
-                googleInterID: myAdsIdClass.googleInterstitialId);
+            provider.loadAdxInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, context: context, fbInterID: myAdsIdClass.facebookInterstitialId, googleInterID: myAdsIdClass.googleInterstitialId);
           }
         }
       }
@@ -113,36 +87,21 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
       print('$screenName Data ----> ${intent.extras}');
       switch (intent.action) {
         case 'LoadAd':
-          final provider = Provider.of<InterstitialAdsWidgetProvider>(context,
-              listen: false);
-          myAdsIdClass = await LoadAdsByApi()
-              .isAvailableAds(context: context, screenName: screenName);
+          final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+          myAdsIdClass = await LoadAdsByApi().isAvailableAds(context: context, screenName: screenName);
           setState(() {});
 
           if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+            print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
             if (isCheckScreen) {
-              provider.loadFBInterstitialAd(
-                  myAdsIdClass: myAdsIdClass,
-                  screenName: screenName,
-                  fbID: myAdsIdClass.facebookInterstitialId,
-                  googleID: myAdsIdClass.googleInterstitialId);
+              provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
             } else {
-              print(
-                  "myAdsIdClass.isFacebook && isFacebookAdsShow in receiver interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
+              print("myAdsIdClass.isFacebook && isFacebookAdsShow in receiver interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
               if (myAdsIdClass.isFacebook && isFacebookAdsShow) {
-                provider.loadFBInterstitialAd(
-                    myAdsIdClass: myAdsIdClass,
-                    screenName: screenName,
-                    fbID: myAdsIdClass.facebookInterstitialId,
-                    googleID: myAdsIdClass.googleInterstitialId);
+                provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
               }
               if (myAdsIdClass.isGoogle && isADXAdsShow) {
-                provider.loadAdxInterstitialAd(
-                    myAdsIdClass: myAdsIdClass,
-                    screenName: screenName,
-                    context: context,
-                    fbInterID: myAdsIdClass.facebookInterstitialId,
-                    googleInterID: myAdsIdClass.googleInterstitialId);
+                provider.loadAdxInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, context: context, fbInterID: myAdsIdClass.facebookInterstitialId, googleInterID: myAdsIdClass.googleInterstitialId);
               }
             }
           }
@@ -155,9 +114,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
   @override
   void dispose() {
     print("Receiver stopped");
-    if (receiver != null) {
-      receiver.cancel();
-    }
+    receiver.cancel();
 
     super.dispose();
   }
@@ -167,9 +124,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
   Widget fbNativeAd3 = const SizedBox();
   Widget fbNativeAd4 = const SizedBox();
   _showFBNativeAd({required String isCalledFrom}) {
-    bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool(
-            '${StorageKeyUtils.isFailedTwiceToLoadFbAdId}${myAdsIdClass.facebookNativeId}') ??
-        false;
+    bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}${myAdsIdClass.facebookNativeId}') ?? false;
 
     if (myAdsIdClass.facebookNativeId.isEmpty || isFailedTwiceToLoadFbAdId) {
       loadNativeOrNativeBannerAdsForFile();
@@ -202,15 +157,10 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
 
   updatePrefsResponse() {
     Timer(const Duration(seconds: 1), () {
-      isFacebookAdsShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ??
-              false;
-      isADXAdsShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
-      isAdmobAdsShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
-      isAdShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
+      isFacebookAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
+      isADXAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
+      isAdmobAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
+      isAdShow = StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
       setState(() {});
       if (isAdmobAdsShow) {
         setState(() {
@@ -226,8 +176,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
   }
 
   Widget loadFbNativeAd(String adId, {String isCalledFrom = 'init'}) {
-    print(
-        'Screen name loadFbNativeAd() ---> $screenName isCalledFrom -->$isCalledFrom ');
+    print('Screen name loadFbNativeAd() ---> $screenName isCalledFrom -->$isCalledFrom ');
 
     String nativeAdId = adId;
     // AdsUnitId().getFacebookNativeAdId();
@@ -248,9 +197,9 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
       backgroundColor: const Color(0xFFFFE6C5),
       titleColor: Colors.black,
       descriptionColor: Colors.black,
-      buttonColor: const Color(0xff673AB7),
+      buttonColor: const Color(0xff447D58),
       buttonTitleColor: Colors.white,
-      buttonBorderColor: const Color(0xff673AB7),
+      buttonBorderColor: const Color(0xff447D58),
       listener: (result, value) {
         // print('---=- =-= -= -= -= - $result $value');
 
@@ -259,13 +208,10 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
           StorageUtils.prefs.setBool(StorageKeyUtils.isShowFacebookAds, false);
           StorageUtils.prefs.setBool(StorageKeyUtils.isShowADXAds, true);
           StorageUtils.prefs.setBool(StorageKeyUtils.isShowAdmobAds, true);
-          bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool(
-                  '${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId') ??
-              false;
+          bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId') ?? false;
 
           if (!isFailedTwiceToLoadFbAdId) {
-            StorageUtils.prefs.setBool(
-                '${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId', true);
+            StorageUtils.prefs.setBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId', true);
             loadNativeOrNativeBannerAdsForFile(isCalledFrom: 'loadFbNativeAd');
           }
         }
@@ -287,8 +233,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
   bool _isAdxNativeAd4Loaded = false;
 
   loadAdxNativeAd1({String isCalledFrom = 'init'}) async {
-    print(
-        'Screen name loadNativeAd() ---> $screenName isCalledFrom --> $isCalledFrom ');
+    print('Screen name loadNativeAd() ---> $screenName isCalledFrom --> $isCalledFrom ');
 
     String nativeAdId = myAdsIdClass.googleNativeId;
     // AdsUnitId().getGoogleNativeAdId();
@@ -296,7 +241,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
       setState(() {
         adxNativeAd1 = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -316,8 +261,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
   }
 
   loadAdxNativeAd2({String isCalledFrom = 'init'}) async {
-    print(
-        'Screen name loadNativeAd2() ---> $screenName isCalledFrom --> $isCalledFrom ');
+    print('Screen name loadNativeAd2() ---> $screenName isCalledFrom --> $isCalledFrom ');
 
     String nativeAdId = myAdsIdClass.googleNativeId;
     // AdsUnitId().getGoogleNativeAdId();
@@ -325,7 +269,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
       setState(() {
         adxNativeAd2 = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -345,8 +289,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
   }
 
   loadAdxNativeAd3({String isCalledFrom = 'init'}) async {
-    print(
-        'Screen name loadNativeAd3() ---> $screenName isCalledFrom --> $isCalledFrom');
+    print('Screen name loadNativeAd3() ---> $screenName isCalledFrom --> $isCalledFrom');
 
     String nativeAdId = myAdsIdClass.googleNativeId;
     // AdsUnitId().getGoogleNativeAdId();
@@ -354,7 +297,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
       setState(() {
         adxNativeAd3 = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -374,8 +317,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
   }
 
   loadAdxNativeAd4({String isCalledFrom = 'init'}) async {
-    print(
-        'Screen name loadNativeAd4() ---> $screenName isCalledFrom --> $isCalledFrom ');
+    print('Screen name loadNativeAd4() ---> $screenName isCalledFrom --> $isCalledFrom ');
 
     String nativeAdId = myAdsIdClass.googleNativeId;
     // AdsUnitId().getGoogleNativeAdId();
@@ -383,7 +325,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
       setState(() {
         adxNativeAd4 = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -437,73 +379,71 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
                     height: 200,
                     fit: BoxFit.cover,
                   ),
+                  const SizedBox(height: 10),
                   fbNativeAd4,
                   _isAdxNativeAd4Loaded == false
                       ? const SizedBox()
                       : Container(
                           color: Colors.transparent,
-                          height: 330,
+                          height: 275,
                           alignment: Alignment.center,
                           child: AdWidget(ad: adxNativeAd4!),
                         ),
                   const SizedBox(height: 20),
-                  loanWidget(widget.arguments.lable1 ?? '',
-                      widget.arguments.description1 ?? ''),
+                  loanWidget(widget.arguments.lable1 ?? '', widget.arguments.description1 ?? ''),
                   sizedBox5(),
+                  const SizedBox(height: 10),
                   fbNativeAd1,
                   _isAdxNativeAd1Loaded == false
                       ? const SizedBox()
                       : Container(
                           color: Colors.transparent,
-                          height: 330,
+                          height: 275,
                           alignment: Alignment.center,
                           child: AdWidget(ad: adxNativeAd1!),
                         ),
                   sizedBox5(),
-                  loanWidget(widget.arguments.lable2 ?? '',
-                      widget.arguments.description2 ?? ''),
+                  loanWidget(widget.arguments.lable2 ?? '', widget.arguments.description2 ?? ''),
                   sizedBox5(),
+                  const SizedBox(height: 10),
                   fbNativeAd2,
                   _isAdxNativeAd2Loaded == false
                       ? const SizedBox()
                       : Container(
                           color: Colors.transparent,
-                          height: 330,
+                          height: 275,
                           alignment: Alignment.center,
                           child: AdWidget(ad: adxNativeAd2!),
                         ),
                   sizedBox5(),
-                  loanWidget(widget.arguments.lable3 ?? '',
-                      widget.arguments.description3 ?? ''),
+                  loanWidget(widget.arguments.lable3 ?? '', widget.arguments.description3 ?? ''),
                   sizedBox5(),
+                  const SizedBox(height: 10),
                   fbNativeAd3,
                   _isAdxNativeAd3Loaded == false
                       ? const SizedBox()
                       : Container(
                           color: Colors.transparent,
-                          height: 330,
+                          height: 275,
                           alignment: Alignment.center,
                           child: AdWidget(ad: adxNativeAd3!),
                         ),
                   sizedBox5(),
-                  loanWidget(widget.arguments.lable4 ?? '',
-                      widget.arguments.description4 ?? ''),
+                  loanWidget(widget.arguments.lable4 ?? '', widget.arguments.description4 ?? ''),
                   sizedBox5(),
                   // fbNativeAd4,
                   // adxNativeAd4 == null || _isAdxNativeAd4Loaded == false
                   //     ? const SizedBox()
                   //     : Container(
                   //         color: Colors.transparent,
-                  //         height: 330,
+                  //         height: 275,
                   //         alignment: Alignment.center,
                   //         child: AdWidget(ad: adxNativeAd4!),
                   //       ),
                   CenterTextButtonWidget(
                     title: widget.arguments.buttonLable ?? '',
                     onTap: () {
-                      if (receiver != null) {
-                        receiver.cancel();
-                      }
+                      receiver.cancel();
                       getRoute();
                     },
                   ),
@@ -518,8 +458,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
   }
 
   getRoute() {
-    final provider =
-        Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+    final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
     return provider.showFbOrAdxOrAdmobInterstitialAd(
       availableAds: myAdsIdClass.availableAdsList,
       myAdsIdClass: myAdsIdClass,
@@ -547,16 +486,12 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
             children: [
               Text(
                 title,
-                style: FontUtils.h16(
-                    fontColor: ColorUtils.themeColor.oxff673AB7,
-                    fontWeight: FWT.bold),
+                style: FontUtils.h16(fontColor: ColorUtils.themeColor.oxff447D58, fontWeight: FWT.bold),
               ),
               const SizedBox(height: 10),
               Text(
                 subTitle,
-                style: FontUtils.h14(
-                    fontColor: ColorUtils.themeColor.oxff101523,
-                    fontWeight: FWT.medium),
+                style: FontUtils.h14(fontColor: ColorUtils.themeColor.oxff101523, fontWeight: FWT.medium),
               ),
               const SizedBox(height: 10),
             ],

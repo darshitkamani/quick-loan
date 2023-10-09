@@ -60,7 +60,7 @@ class ProfileButtonWidget extends StatelessWidget {
                 trailWidget ??
                     Icon(
                       Icons.arrow_forward_ios_rounded,
-                      color: ColorUtils.themeColor.oxff673AB7,
+                      color: ColorUtils.themeColor.oxff447D58,
                     )
               ],
             ),

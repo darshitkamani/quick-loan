@@ -39,7 +39,7 @@ class CenterTextButtonBorderWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(7),
             color: Colors.transparent,
             border:
-                Border.all(color: ColorUtils.themeColor.oxff673AB7, width: 2),
+                Border.all(color: ColorUtils.themeColor.oxff447D58, width: 2),
           ),
           child: Center(
             child: title,

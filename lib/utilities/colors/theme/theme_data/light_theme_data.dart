@@ -10,7 +10,7 @@ class LightTheme extends ThemeColor {
           oxff858494: const Color(0xff858494),
           oxff101523: const Color(0xff101523),
           oxff383838: const Color(0xff383838),
-          oxff213972: const Color(0xff673AB7),
-          oxff673AB7: const Color(0xff673AB7),
+          oxff213972: const Color(0xff447D58),
+          oxff447D58: const Color(0xff447D58),
         );
 }

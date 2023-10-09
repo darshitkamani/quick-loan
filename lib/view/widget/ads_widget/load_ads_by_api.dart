@@ -15,7 +15,7 @@ class LoadAdsByApi {
       StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
 
   Future<MyAdsIdClass> isAvailableAds({
-    required BuildContext context,
+    BuildContext? context,
     required String screenName,
   }) async {
     MyAdsIdClass myAdsIdClass = MyAdsIdClass();

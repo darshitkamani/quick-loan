@@ -28,15 +28,13 @@ void main() async {
   MobileAds.instance.initialize();
   ColorUtils.themeColor = LightTheme();
   StorageUtils.prefs = await SharedPreferences.getInstance();
-  MobileAds.instance.updateRequestConfiguration(RequestConfiguration(
-      testDeviceIds: ['294449C3CD34F90F1EA87EF0A43723A7']));
+  MobileAds.instance.updateRequestConfiguration(RequestConfiguration(testDeviceIds: ['294449C3CD34F90F1EA87EF0A43723A7']));
   FacebookAudienceNetwork.init(
 
       // iOSAdvertiserTrackingEnabled: true //default false
       );
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) {
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) {
     return runApp(
       EasyLocalization(
           path: 'assets/translations',
@@ -47,21 +45,21 @@ void main() async {
           ],
           startLocale: const Locale('en', 'US'),
           fallbackLocale: const Locale('en', 'US'),
-          child: const QuickLoanApp()),
+          child: const InstantPayApp()),
     );
   });
 }
 
-///QuickLoanApp
-class QuickLoanApp extends StatefulWidget {
-  const QuickLoanApp({Key? key}) : super(key: key);
+///InstantPayApp
+class InstantPayApp extends StatefulWidget {
+  const InstantPayApp({Key? key}) : super(key: key);
   @override
-  State<QuickLoanApp> createState() => _QuickLoanAppState();
+  State<InstantPayApp> createState() => _InstantPayAppState();
 }
 
-class _QuickLoanAppState extends State<QuickLoanApp>
-    with WidgetsBindingObserver {
+class _InstantPayAppState extends State<InstantPayApp> with WidgetsBindingObserver {
   late ConnectivityIndicatorWidget indicator;
+
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
 
@@ -69,7 +67,7 @@ class _QuickLoanAppState extends State<QuickLoanApp>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-    if (!kDebugMode) {
+      if (!kDebugMode) {
         await analytics.logEvent(name: 'EVENT_STARTED');
       }
     });
@@ -100,7 +98,7 @@ class _QuickLoanAppState extends State<QuickLoanApp>
         theme: ThemeData(
             scaffoldBackgroundColor: ColorUtils().greyBGColor,
             appBarTheme: AppBarTheme(
-              backgroundColor: ColorUtils.themeColor.oxff673AB7,
+              backgroundColor: ColorUtils.themeColor.oxff447D58,
             )),
         initialRoute: RouteUtils.splashScreen,
         onGenerateRoute: RouteUtils.onGenerateRoute,

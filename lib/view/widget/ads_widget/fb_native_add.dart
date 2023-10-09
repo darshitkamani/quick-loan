@@ -23,9 +23,9 @@
 //     backgroundColor: const Color(0xFFFFE6C5),
 //     titleColor: Colors.black,
 //     descriptionColor: Colors.black,
-//     buttonColor: const Color(0xff673AB7),
+//     buttonColor: const Color(0xff447D58),
 //     buttonTitleColor: Colors.white,
-//     buttonBorderColor: const Color(0xff673AB7),
+//     buttonBorderColor: const Color(0xff447D58),
 //     listener: (result, value) {
 //       // print('---=- =-= -= -= -= - $result $value');
 
@@ -54,9 +54,9 @@
 //     backgroundColor: const Color(0xFFFFE6C5),
 //     titleColor: Colors.black,
 //     descriptionColor: Colors.black,
-//     buttonColor: const Color(0xff673AB7),
+//     buttonColor: const Color(0xff447D58),
 //     buttonTitleColor: Colors.white,
-//     buttonBorderColor: const Color(0xff673AB7),
+//     buttonBorderColor: const Color(0xff447D58),
 //     listener: (result, value) {
 //       print('---=- =-= -= -= -= - $result $value');
 //       if (result == NativeAdResult.ERROR) {

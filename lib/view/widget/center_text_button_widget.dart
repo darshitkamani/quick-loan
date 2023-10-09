@@ -35,7 +35,7 @@ class CenterTextButtonWidget extends StatelessWidget {
           width: width ?? screenSize.width * 0.92,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(7),
-            color: ColorUtils.themeColor.oxff673AB7,
+            color: ColorUtils.themeColor.oxff447D58,
           ),
           child: Center(
             child: Text(

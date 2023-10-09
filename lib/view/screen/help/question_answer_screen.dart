@@ -1,6 +1,5 @@
 import 'package:action_broadcast/action_broadcast.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -38,9 +37,6 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
     initReceiver();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      if (!kDebugMode) {
-        await FirebaseAnalytics.instance.logEvent(name: screenName);
-      }
       myAdsIdClass = await LoadAdsByApi().isAvailableAds(context: context, screenName: screenName);
       setState(() {});
       final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
@@ -65,6 +61,7 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
         }
       }
       if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
         if (isCheckScreen) {
           provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
         } else {
@@ -90,6 +87,7 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
           setState(() {});
 
           if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+            print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
             if (isCheckScreen) {
               provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
             } else {
@@ -170,7 +168,7 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
       setState(() {
         nativeAd = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           nativeTemplateStyle: NativeTemplateStyle(templateType: TemplateType.medium),
           listener: NativeAdListener(
@@ -213,9 +211,9 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
       backgroundColor: const Color(0xFFFFE6C5),
       titleColor: Colors.black,
       descriptionColor: Colors.black,
-      buttonColor: const Color(0xff673AB7),
+      buttonColor: const Color(0xff447D58),
       buttonTitleColor: Colors.white,
-      buttonBorderColor: const Color(0xff673AB7),
+      buttonBorderColor: const Color(0xff447D58),
       listener: (result, value) {
         // print('---=- =-= -= -= -= - $result $value');
 
@@ -240,7 +238,7 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: ColorUtils.themeColor.oxff673AB7,
+        backgroundColor: ColorUtils.themeColor.oxff447D58,
         automaticallyImplyLeading: false,
         leading: IconButton(
             onPressed: () {
@@ -266,12 +264,13 @@ class _QuestionAnswerScreenState extends State<QuestionAnswerScreen> {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
+          const SizedBox(height: 10),
             fbNativeAd,
             nativeAd == null || _nativeAdIsLoaded == false
                 ? const SizedBox()
                 : Container(
                     color: Colors.transparent,
-                    height: 370,
+                    height: 275,
                     alignment: Alignment.center,
                     child: AdWidget(ad: nativeAd!),
                   ),

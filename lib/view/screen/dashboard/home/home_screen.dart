@@ -1,13 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 //
-import 'dart:async';
-
+import 'package:action_broadcast/action_broadcast.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:action_broadcast/action_broadcast.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:instant_pay/l10n/locale_keys.g.dart';
@@ -36,17 +34,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String screenName = "HomeScreen";
-  bool isFacebookAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
-  bool isADXAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
-  bool isAdmobAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
-  bool isAdShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
-  bool isCheckScreen =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isCheckScreenForAdInApp) ??
-          false;
+  bool isFacebookAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
+  bool isADXAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
+  bool isAdmobAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
+  bool isAdShow = StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
+  bool isCheckScreen = StorageUtils.prefs.getBool(StorageKeyUtils.isCheckScreenForAdInApp) ?? false;
 
   MyAdsIdClass myAdsIdClass = MyAdsIdClass();
   late StreamSubscription receiver;
@@ -66,15 +58,14 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    if (!kDebugMode) {}
     initReceiver();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-     if (!kDebugMode) {
+      if (!kDebugMode) {
         await FirebaseAnalytics.instance.logEvent(name: screenName);
       }
       setState(() {
-        int prefferedLanguage = StorageUtils.prefs
-                .getInt(StorageKeyUtils.applicationLanguageState) ??
-            0;
+        int prefferedLanguage = StorageUtils.prefs.getInt(StorageKeyUtils.applicationLanguageState) ?? 0;
 
         isLangSwitchValue = (prefferedLanguage == 0) ? false : true;
         isLoadingAdsWidget = true;
@@ -86,19 +77,16 @@ class _HomeScreenState extends State<HomeScreen> {
         });
       });
 
-      final provider =
-          Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+      final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
 
-      myAdsIdClass = await LoadAdsByApi()
-          .isAvailableAds(context: context, screenName: screenName);
+      myAdsIdClass = await LoadAdsByApi().isAvailableAds(context: context, screenName: screenName);
       setState(() {});
       if (myAdsIdClass.availableAdsList.contains("Native")) {
         ///Check new flow for every screen show first facebook always
         if (isCheckScreen) {
           _showFBNativeAd(isCalledFrom: 'isCheckScreen');
         } else {
-          print(
-              "myAdsIdClass.isFacebook && isFacebookAdsShow --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
+          print("myAdsIdClass.isFacebook && isFacebookAdsShow --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
           if (myAdsIdClass.isFacebook && isFacebookAdsShow) {
             _showFBNativeAd(isCalledFrom: 'else isCheckScreen ');
           }
@@ -109,29 +97,16 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
       if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
         if (isCheckScreen) {
-          provider.loadFBInterstitialAd(
-              myAdsIdClass: myAdsIdClass,
-              screenName: screenName,
-              fbID: myAdsIdClass.facebookInterstitialId,
-              googleID: myAdsIdClass.googleInterstitialId);
+          provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
         } else {
-          print(
-              "myAdsIdClass.isFacebook && isFacebookAdsShow interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
+          print("myAdsIdClass.isFacebook && isFacebookAdsShow interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
           if (myAdsIdClass.isFacebook && isFacebookAdsShow) {
-            provider.loadFBInterstitialAd(
-                myAdsIdClass: myAdsIdClass,
-                screenName: screenName,
-                fbID: myAdsIdClass.facebookInterstitialId,
-                googleID: myAdsIdClass.googleInterstitialId);
+            provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
           }
           if (myAdsIdClass.isGoogle && isADXAdsShow) {
-            provider.loadAdxInterstitialAd(
-                myAdsIdClass: myAdsIdClass,
-                screenName: screenName,
-                context: context,
-                fbInterID: myAdsIdClass.facebookInterstitialId,
-                googleInterID: myAdsIdClass.googleInterstitialId);
+            provider.loadAdxInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, context: context, fbInterID: myAdsIdClass.facebookInterstitialId, googleInterID: myAdsIdClass.googleInterstitialId);
           }
         }
       }
@@ -143,35 +118,20 @@ class _HomeScreenState extends State<HomeScreen> {
       print('$screenName Data ----> ${intent.extras}');
       switch (intent.action) {
         case 'LoadAd':
-          final provider = Provider.of<InterstitialAdsWidgetProvider>(context,
-              listen: false);
-          myAdsIdClass = await LoadAdsByApi()
-              .isAvailableAds(context: context, screenName: screenName);
+          final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+          myAdsIdClass = await LoadAdsByApi().isAvailableAds(context: context, screenName: screenName);
           setState(() {});
           if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+            print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
             if (isCheckScreen) {
-              provider.loadFBInterstitialAd(
-                  myAdsIdClass: myAdsIdClass,
-                  screenName: screenName,
-                  fbID: myAdsIdClass.facebookInterstitialId,
-                  googleID: myAdsIdClass.googleInterstitialId);
+              provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
             } else {
-              print(
-                  "myAdsIdClass.isFacebook && isFacebookAdsShow in receiver interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
+              print("myAdsIdClass.isFacebook && isFacebookAdsShow in receiver interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
               if (myAdsIdClass.isFacebook && isFacebookAdsShow) {
-                provider.loadFBInterstitialAd(
-                    myAdsIdClass: myAdsIdClass,
-                    screenName: screenName,
-                    fbID: myAdsIdClass.facebookInterstitialId,
-                    googleID: myAdsIdClass.googleInterstitialId);
+                provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
               }
               if (myAdsIdClass.isGoogle && isADXAdsShow) {
-                provider.loadAdxInterstitialAd(
-                    myAdsIdClass: myAdsIdClass,
-                    screenName: screenName,
-                    context: context,
-                    fbInterID: myAdsIdClass.facebookInterstitialId,
-                    googleInterID: myAdsIdClass.googleInterstitialId);
+                provider.loadAdxInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, context: context, fbInterID: myAdsIdClass.facebookInterstitialId, googleInterID: myAdsIdClass.googleInterstitialId);
               }
             }
           }
@@ -182,15 +142,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   loadNativeAd({String isCalledFrom = 'init'}) async {
-    print(
-        'Screen name loadNativeAd() ---> $screenName isCalledFrom --> $isCalledFrom ');
-    String nativeAdId =
-        myAdsIdClass.googleNativeId; //  AdsUnitId().getGoogleNativeAdId();
+    print('Screen name loadNativeAd() ---> $screenName isCalledFrom --> $isCalledFrom ');
+    String nativeAdId = myAdsIdClass.googleNativeId; //  AdsUnitId().getGoogleNativeAdId();
     if (nativeAdId != '') {
       setState(() {
         adxNativeAd = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -211,16 +169,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   loadNativeAd1({String isCalledFrom = 'init'}) async {
-    print(
-        'Screen name loadNativeAd1() ---> $screenName isCalledFrom --> $isCalledFrom ');
+    print('Screen name loadNativeAd1() ---> $screenName isCalledFrom --> $isCalledFrom ');
 
-    String nativeAdId =
-        myAdsIdClass.googleNativeId; // AdsUnitId().getGoogleNativeAdId();
+    String nativeAdId = myAdsIdClass.googleNativeId; // AdsUnitId().getGoogleNativeAdId();
     if (nativeAdId != '') {
       setState(() {
         adxNativeAd1 = NativeAd(
           adUnitId: myAdsIdClass.googleNativeId, // nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -241,15 +197,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   updatePrefsResponse({required String adType}) {
     Timer(const Duration(seconds: 1), () {
-      isFacebookAdsShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ??
-              false;
-      isADXAdsShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
-      isAdmobAdsShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
-      isAdShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
+      isFacebookAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
+      isADXAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
+      isAdmobAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
+      isAdShow = StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
       setState(() {});
       if (isAdmobAdsShow) {
         setState(() {
@@ -265,20 +216,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _showFBNativeAd({required String isCalledFrom}) {
-    bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool(
-            '${StorageKeyUtils.isFailedTwiceToLoadFbAdId}${myAdsIdClass.facebookNativeId}') ??
-        false;
-    print(
-        'myAdsIdClass ---> ${myAdsIdClass.facebookNativeId.isEmpty}  ||$isFailedTwiceToLoadFbAdId -- > ${myAdsIdClass.facebookNativeId.isEmpty || isFailedTwiceToLoadFbAdId}');
+    bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}${myAdsIdClass.facebookNativeId}') ?? false;
+    print('myAdsIdClass ---> ${myAdsIdClass.facebookNativeId.isEmpty}  ||$isFailedTwiceToLoadFbAdId -- > ${myAdsIdClass.facebookNativeId.isEmpty || isFailedTwiceToLoadFbAdId}');
     if (myAdsIdClass.facebookNativeId.isEmpty || isFailedTwiceToLoadFbAdId) {
       loadNativeAd(isCalledFrom: isCalledFrom);
       loadNativeAd1(isCalledFrom: isCalledFrom);
     } else {
       setState(() {
-        fbNativeAdWidget = loadFbNativeAd(myAdsIdClass.facebookNativeId,
-            isCalledFrom: isCalledFrom);
-        fbNativeAdWidget1 = loadFbNativeAd(myAdsIdClass.facebookNativeId,
-            isCalledFrom: isCalledFrom);
+        fbNativeAdWidget = loadFbNativeAd(myAdsIdClass.facebookNativeId, isCalledFrom: isCalledFrom);
+        fbNativeAdWidget1 = loadFbNativeAd(myAdsIdClass.facebookNativeId, isCalledFrom: isCalledFrom);
       });
       // updatePrefsResponse(adType: 'Native');
     }
@@ -286,9 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    if (receiver != null) {
-      receiver.cancel();
-    }
+    receiver.cancel();
     if (adxNativeAd != null) {
       adxNativeAd!.dispose();
     }
@@ -300,8 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget loadFbNativeAd(String adId, {String isCalledFrom = 'init'}) {
-    print(
-        'Screen name loadFbNativeAd() ---> $screenName isCalledFrom -->$isCalledFrom ');
+    print('Screen name loadFbNativeAd() ---> $screenName isCalledFrom -->$isCalledFrom ');
 
     String nativeAdId = adId;
     // AdsUnitId().getFacebookNativeAdId();
@@ -322,9 +265,9 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: const Color(0xFFFFE6C5),
       titleColor: Colors.black,
       descriptionColor: Colors.black,
-      buttonColor: const Color(0xff673AB7),
+      buttonColor: const Color(0xff447D58),
       buttonTitleColor: Colors.white,
-      buttonBorderColor: const Color(0xff673AB7),
+      buttonBorderColor: const Color(0xff447D58),
       listener: (result, value) {
         // print('---=- =-= -= -= -= - $result $value');
 
@@ -333,13 +276,10 @@ class _HomeScreenState extends State<HomeScreen> {
           StorageUtils.prefs.setBool(StorageKeyUtils.isShowFacebookAds, false);
           StorageUtils.prefs.setBool(StorageKeyUtils.isShowADXAds, true);
           StorageUtils.prefs.setBool(StorageKeyUtils.isShowAdmobAds, true);
-          bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool(
-                  '${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId') ??
-              false;
+          bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId') ?? false;
 
           if (!isFailedTwiceToLoadFbAdId) {
-            StorageUtils.prefs.setBool(
-                '${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId', true);
+            StorageUtils.prefs.setBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId', true);
             loadNativeAd(isCalledFrom: 'fbNativeFunction');
             loadNativeAd1(isCalledFrom: 'fbNativeFunction');
           }
@@ -372,14 +312,9 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
               onPressed: () async {
-                final provider = Provider.of<InterstitialAdsWidgetProvider>(
-                    context,
-                    listen: false);
-                if (receiver != null) {
-                  receiver.cancel();
-                }
-                print(
-                    'myAdsIdClass -screen running ad ->> $screenName${myAdsIdClass.isFacebook} ${myAdsIdClass.isGoogle}');
+                final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+                receiver.cancel();
+                print('myAdsIdClass -screen running ad ->> $screenName${myAdsIdClass.isFacebook} ${myAdsIdClass.isGoogle}');
 
                 provider.showFbOrAdxOrAdmobInterstitialAd(
                   myAdsIdClass: myAdsIdClass,
@@ -406,23 +341,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 inactiveToggleColor: const Color(0xFFFFFFFF),
                 activeColor: const Color(0xFFFFFFFF),
                 inactiveColor: const Color(0xFFFFFFFF),
-                activeIcon: const Image(
-                    image: AssetImage(AssetUtils.hinLogo), fit: BoxFit.cover),
-                inactiveIcon: const Image(
-                    image: AssetImage(AssetUtils.engLogo), fit: BoxFit.cover),
+                activeIcon: const Image(image: AssetImage(AssetUtils.hinLogo), fit: BoxFit.cover),
+                inactiveIcon: const Image(image: AssetImage(AssetUtils.engLogo), fit: BoxFit.cover),
                 onToggle: (val) {
-                  if (EasyLocalization.of(context)?.currentLocale ==
-                      const Locale('en', 'US')) {
-                    EasyLocalization.of(context)
-                        ?.setLocale(const Locale('hi', 'IN'));
-                    StorageUtils.prefs
-                        .setInt(StorageKeyUtils.applicationLanguageState, 1);
-                  } else if (EasyLocalization.of(context)?.currentLocale ==
-                      const Locale('hi', 'IN')) {
-                    EasyLocalization.of(context)
-                        ?.setLocale(const Locale('en', 'US'));
-                    StorageUtils.prefs
-                        .setInt(StorageKeyUtils.applicationLanguageState, 0);
+                  if (EasyLocalization.of(context)?.currentLocale == const Locale('en', 'US')) {
+                    EasyLocalization.of(context)?.setLocale(const Locale('hi', 'IN'));
+                    StorageUtils.prefs.setInt(StorageKeyUtils.applicationLanguageState, 1);
+                  } else if (EasyLocalization.of(context)?.currentLocale == const Locale('hi', 'IN')) {
+                    EasyLocalization.of(context)?.setLocale(const Locale('en', 'US'));
+                    StorageUtils.prefs.setInt(StorageKeyUtils.applicationLanguageState, 0);
                   }
                   setState(() {
                     isLangSwitchValue = val;
@@ -448,11 +375,12 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                  const SizedBox(height: 10),
                     fbNativeAdWidget,
                     (adxNativeAdLoaded && adxNativeAd != null)
                         ? Container(
                             color: Colors.transparent,
-                            height: 330.0,
+                            height: 275,
                             alignment: Alignment.center,
                             child: AdWidget(ad: adxNativeAd!),
                           )
@@ -464,9 +392,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           LocaleKeys.ourServices.tr(),
-                          style: FontUtils.h16(
-                              fontColor: ColorUtils.themeColor.oxff000000,
-                              fontWeight: FWT.semiBold),
+                          style: FontUtils.h16(fontColor: ColorUtils.themeColor.oxff000000, fontWeight: FWT.semiBold),
                         ),
                       ),
                     ),
@@ -474,12 +400,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
+                          childAspectRatio: 1.5,
                           crossAxisSpacing: 2,
-                          childAspectRatio: 1.3,
-                          mainAxisSpacing: 4,
+                          mainAxisSpacing: 2,
                         ),
                         itemCount: loanProductsList.length,
                         shrinkWrap: true,
@@ -488,13 +413,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           return LoanButtonWidget(
                             title: loanProductsList[index]['name'],
                             titleWidget: Image(
-                              image: AssetImage(
-                                  loanProductsImageList[index]['img']),
+                              image: AssetImage(loanProductsImageList[index]['img']),
                               height: 60,
                             ),
                             onTap: () {
-                              getLoanDetails(
-                                  loanProductsImageList[index]['title']!);
+                              getLoanDetails(loanProductsImageList[index]['title']!);
                             },
                           );
                         },
@@ -509,8 +432,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: BounceClickWidget(
                         onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) {
                             return const FDCalculator();
                           }));
                         },
@@ -520,12 +442,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: screenSize.height * 0.30,
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                boxShadow: const [
-                                  BoxShadow(
-                                      color: Colors.black,
-                                      blurRadius: 10,
-                                      spreadRadius: -7)
-                                ],
+                                boxShadow: const [BoxShadow(color: Colors.black, blurRadius: 10, spreadRadius: -7)],
                                 borderRadius: BorderRadius.circular(20),
                                 color: ColorUtils.themeColor.oxffFFFFFF,
                               ),
@@ -550,11 +467,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 10),
                     fbNativeAdWidget1,
                     (adxNativeAdLoaded1 && adxNativeAd1 != null)
                         ? Container(
                             color: Colors.transparent,
-                            height: 330.0,
+                            height: 275,
                             alignment: Alignment.center,
                             child: AdWidget(ad: adxNativeAd1!),
                           )
@@ -610,11 +528,8 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
 
   getLoanDetails(String loanName) {
-    if (receiver != null) {
-      receiver.cancel();
-    }
-    final provider =
-        Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+    receiver.cancel();
+    final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
     switch (loanName) {
       case cashLoan:
         return provider.showFbOrAdxOrAdmobInterstitialAd(
@@ -645,8 +560,7 @@ class _HomeScreenState extends State<HomeScreen> {
             description4: LocaleKeys.cashLoanDescription4.tr(),
             takePoints: parseStringToList(LocaleKeys.cashLoanTakePoints.tr()),
             take: parseStringToList(LocaleKeys.cashLoanTake.tr()),
-            notTakePoints:
-                parseStringToList(LocaleKeys.cashLoanNotTakePoints.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.cashLoanNotTakePoints.tr()),
             notTake: parseStringToList(LocaleKeys.cashLoanNotTake.tr()),
           ),
         );
@@ -663,8 +577,7 @@ class _HomeScreenState extends State<HomeScreen> {
             imgURl: AssetUtils.icBusinessLoan,
             loanName: LocaleKeys.businessLoan.tr(),
             subTitle: LocaleKeys.businessLoanSubTitle.tr(),
-            eligibilityCriteria:
-                LocaleKeys.businessLoanEligibilityCriteria.tr(),
+            eligibilityCriteria: LocaleKeys.businessLoanEligibilityCriteria.tr(),
             documents: LocaleKeys.businessLoanDocuments.tr(),
             tenureDescription: LocaleKeys.businessLoanTenureDescription.tr(),
             interest: LocaleKeys.businessLoanInterest.tr(),
@@ -679,11 +592,9 @@ class _HomeScreenState extends State<HomeScreen> {
             description3: LocaleKeys.businessLoanDescription3.tr(),
             lable4: LocaleKeys.businessLoanLable4.tr(),
             description4: LocaleKeys.businessLoanDescription4.tr(),
-            takePoints:
-                parseStringToList(LocaleKeys.businessLoanTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.businessLoanTakePoints.tr()),
             take: parseStringToList(LocaleKeys.businessLoanTake.tr()),
-            notTakePoints:
-                parseStringToList(LocaleKeys.businessLoanNotTakePoints.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.businessLoanNotTakePoints.tr()),
             notTake: parseStringToList(LocaleKeys.businessLoanNotTake.tr()),
           ),
         );
@@ -715,11 +626,9 @@ class _HomeScreenState extends State<HomeScreen> {
             description3: LocaleKeys.newHomeLoanDescription3.tr(),
             lable4: LocaleKeys.newHomeLoanLable4.tr(),
             description4: LocaleKeys.newHomeLoanDescription4.tr(),
-            takePoints:
-                parseStringToList(LocaleKeys.newHomeLoanTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.newHomeLoanTakePoints.tr()),
             take: parseStringToList(LocaleKeys.newHomeLoanTake.tr()),
-            notTakePoints:
-                parseStringToList(LocaleKeys.newHomeLoanNotTakePoints.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.newHomeLoanNotTakePoints.tr()),
             notTake: parseStringToList(LocaleKeys.newHomeLoanNotTake.tr()),
           ),
         );
@@ -736,11 +645,9 @@ class _HomeScreenState extends State<HomeScreen> {
             imgURl: AssetUtils.icHomeConstructionLoan,
             loanName: LocaleKeys.homeConstructionLoan.tr(),
             subTitle: LocaleKeys.homeConstructionLoanSubTitle.tr(),
-            eligibilityCriteria:
-                LocaleKeys.homeConstructionLoanEligibilityCriteria.tr(),
+            eligibilityCriteria: LocaleKeys.homeConstructionLoanEligibilityCriteria.tr(),
             documents: LocaleKeys.homeConstructionLoanDocuments.tr(),
-            tenureDescription:
-                LocaleKeys.homeConstructionLoanTenureDescription.tr(),
+            tenureDescription: LocaleKeys.homeConstructionLoanTenureDescription.tr(),
             interest: LocaleKeys.homeConstructionLoanInterest.tr(),
             loanAmount: LocaleKeys.homeConstructionLoanLoanAmount.tr(),
             processingFees: LocaleKeys.homeConstructionLoanProcessingFees.tr(),
@@ -753,13 +660,10 @@ class _HomeScreenState extends State<HomeScreen> {
             description3: LocaleKeys.homeConstructionLoanDescription3.tr(),
             lable4: LocaleKeys.homeConstructionLoanLable4.tr(),
             description4: LocaleKeys.homeConstructionLoanDescription4.tr(),
-            takePoints: parseStringToList(
-                LocaleKeys.homeConstructionLoanTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.homeConstructionLoanTakePoints.tr()),
             take: parseStringToList(LocaleKeys.homeConstructionLoanTake.tr()),
-            notTakePoints: parseStringToList(
-                LocaleKeys.homeConstructionLoanNotTakePoints.tr()),
-            notTake:
-                parseStringToList(LocaleKeys.homeConstructionLoanNotTake.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.homeConstructionLoanNotTakePoints.tr()),
+            notTake: parseStringToList(LocaleKeys.homeConstructionLoanNotTake.tr()),
           ),
         );
 
@@ -775,15 +679,12 @@ class _HomeScreenState extends State<HomeScreen> {
             imgURl: AssetUtils.icLoanAgainstPropertyLoan,
             loanName: LocaleKeys.loanAgainstProperty.tr(),
             subTitle: LocaleKeys.loanAgainstPropertyLoanSubTitle.tr(),
-            eligibilityCriteria:
-                LocaleKeys.loanAgainstPropertyLoanEligibilityCriteria.tr(),
+            eligibilityCriteria: LocaleKeys.loanAgainstPropertyLoanEligibilityCriteria.tr(),
             documents: LocaleKeys.loanAgainstPropertyLoanDocuments.tr(),
-            tenureDescription:
-                LocaleKeys.loanAgainstPropertyLoanTenureDescription.tr(),
+            tenureDescription: LocaleKeys.loanAgainstPropertyLoanTenureDescription.tr(),
             interest: LocaleKeys.loanAgainstPropertyLoanInterest.tr(),
             loanAmount: LocaleKeys.loanAgainstPropertyLoanLoanAmount.tr(),
-            processingFees:
-                LocaleKeys.loanAgainstPropertyLoanProcessingFees.tr(),
+            processingFees: LocaleKeys.loanAgainstPropertyLoanProcessingFees.tr(),
             buttonLable: LocaleKeys.loanAgainstPropertyLoanButtonLable.tr(),
             lable1: LocaleKeys.loanAgainstPropertyLoanLable1.tr(),
             description1: LocaleKeys.loanAgainstPropertyLoanDescription1.tr(),
@@ -793,14 +694,10 @@ class _HomeScreenState extends State<HomeScreen> {
             description3: LocaleKeys.loanAgainstPropertyLoanDescription3.tr(),
             lable4: LocaleKeys.loanAgainstPropertyLoanLable4.tr(),
             description4: LocaleKeys.loanAgainstPropertyLoanDescription4.tr(),
-            takePoints: parseStringToList(
-                LocaleKeys.loanAgainstPropertyLoanTakePoints.tr()),
-            take:
-                parseStringToList(LocaleKeys.loanAgainstPropertyLoanTake.tr()),
-            notTakePoints: parseStringToList(
-                LocaleKeys.loanAgainstPropertyLoanNotTakePoints.tr()),
-            notTake: parseStringToList(
-                LocaleKeys.loanAgainstPropertyLoanNotTake.tr()),
+            takePoints: parseStringToList(LocaleKeys.loanAgainstPropertyLoanTakePoints.tr()),
+            take: parseStringToList(LocaleKeys.loanAgainstPropertyLoanTake.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.loanAgainstPropertyLoanNotTakePoints.tr()),
+            notTake: parseStringToList(LocaleKeys.loanAgainstPropertyLoanNotTake.tr()),
           ),
         );
 
@@ -816,11 +713,9 @@ class _HomeScreenState extends State<HomeScreen> {
             imgURl: AssetUtils.icSecuredLoan1,
             loanName: LocaleKeys.securedBusinessLoan.tr(),
             subTitle: LocaleKeys.securedBusinessLoanSubTitle.tr(),
-            eligibilityCriteria:
-                LocaleKeys.securedBusinessLoanEligibilityCriteria.tr(),
+            eligibilityCriteria: LocaleKeys.securedBusinessLoanEligibilityCriteria.tr(),
             documents: LocaleKeys.securedBusinessLoanDocuments.tr(),
-            tenureDescription:
-                LocaleKeys.securedBusinessLoanTenureDescription.tr(),
+            tenureDescription: LocaleKeys.securedBusinessLoanTenureDescription.tr(),
             interest: LocaleKeys.securedBusinessLoanInterest.tr(),
             loanAmount: LocaleKeys.securedBusinessLoanLoanAmount.tr(),
             processingFees: LocaleKeys.securedBusinessLoanProcessingFees.tr(),
@@ -833,13 +728,10 @@ class _HomeScreenState extends State<HomeScreen> {
             description3: LocaleKeys.securedBusinessLoanDescription3.tr(),
             lable4: LocaleKeys.securedBusinessLoanLable4.tr(),
             description4: LocaleKeys.securedBusinessLoanDescription4.tr(),
-            takePoints: parseStringToList(
-                LocaleKeys.securedBusinessLoanTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.securedBusinessLoanTakePoints.tr()),
             take: parseStringToList(LocaleKeys.securedBusinessLoanTake.tr()),
-            notTakePoints: parseStringToList(
-                LocaleKeys.securedBusinessLoanNotTakePoints.tr()),
-            notTake:
-                parseStringToList(LocaleKeys.securedBusinessLoanNotTake.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.securedBusinessLoanNotTakePoints.tr()),
+            notTake: parseStringToList(LocaleKeys.securedBusinessLoanNotTake.tr()),
           ),
         );
 
@@ -855,8 +747,7 @@ class _HomeScreenState extends State<HomeScreen> {
             imgURl: AssetUtils.icPersonalLoanImage,
             loanName: LocaleKeys.personalLoan.tr(),
             subTitle: LocaleKeys.personalLoanSubTitle.tr(),
-            eligibilityCriteria:
-                LocaleKeys.personalLoanEligibilityCriteria.tr(),
+            eligibilityCriteria: LocaleKeys.personalLoanEligibilityCriteria.tr(),
             documents: LocaleKeys.personalLoanDocuments.tr(),
             tenureDescription: LocaleKeys.personalLoanTenureDescription.tr(),
             interest: LocaleKeys.personalLoanInterest.tr(),
@@ -871,11 +762,9 @@ class _HomeScreenState extends State<HomeScreen> {
             description3: LocaleKeys.personalLoanDescription3.tr(),
             lable4: LocaleKeys.personalLoanLable4.tr(),
             description4: LocaleKeys.personalLoanDescription4.tr(),
-            takePoints:
-                parseStringToList(LocaleKeys.personalLoanTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.personalLoanTakePoints.tr()),
             take: parseStringToList(LocaleKeys.personalLoanTake.tr()),
-            notTakePoints:
-                parseStringToList(LocaleKeys.personalLoanNotTakePoints.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.personalLoanNotTakePoints.tr()),
             notTake: parseStringToList(LocaleKeys.personalLoanNotTake.tr()),
           ),
         );
@@ -907,11 +796,9 @@ class _HomeScreenState extends State<HomeScreen> {
             description3: LocaleKeys.instantLoanDescription3.tr(),
             lable4: LocaleKeys.instantLoanLable4.tr(),
             description4: LocaleKeys.instantLoanDescription4.tr(),
-            takePoints:
-                parseStringToList(LocaleKeys.instantLoanTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.instantLoanTakePoints.tr()),
             take: parseStringToList(LocaleKeys.instantLoanTake.tr()),
-            notTakePoints:
-                parseStringToList(LocaleKeys.instantLoanNotTakePoints.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.instantLoanNotTakePoints.tr()),
             notTake: parseStringToList(LocaleKeys.instantLoanNotTake.tr()),
           ),
         );
@@ -928,8 +815,7 @@ class _HomeScreenState extends State<HomeScreen> {
             imgURl: AssetUtils.icLevelUpLoanPng,
             loanName: LocaleKeys.levelUpLoans.tr(),
             subTitle: LocaleKeys.levelUpLoansSubTitle.tr(),
-            eligibilityCriteria:
-                LocaleKeys.levelUpLoansEligibilityCriteria.tr(),
+            eligibilityCriteria: LocaleKeys.levelUpLoansEligibilityCriteria.tr(),
             documents: LocaleKeys.levelUpLoansDocuments.tr(),
             tenureDescription: LocaleKeys.levelUpLoansTenureDescription.tr(),
             interest: LocaleKeys.levelUpLoansInterest.tr(),
@@ -944,11 +830,9 @@ class _HomeScreenState extends State<HomeScreen> {
             description3: LocaleKeys.levelUpLoansDescription3.tr(),
             lable4: LocaleKeys.levelUpLoansLable4.tr(),
             description4: LocaleKeys.levelUpLoansDescription4.tr(),
-            takePoints:
-                parseStringToList(LocaleKeys.levelUpLoansTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.levelUpLoansTakePoints.tr()),
             take: parseStringToList(LocaleKeys.levelUpLoansTake.tr()),
-            notTakePoints:
-                parseStringToList(LocaleKeys.levelUpLoansNotTakePoints.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.levelUpLoansNotTakePoints.tr()),
             notTake: parseStringToList(LocaleKeys.levelUpLoansNotTake.tr()),
           ),
         );
@@ -963,10 +847,8 @@ class _HomeScreenState extends State<HomeScreen> {
           fbInterID: myAdsIdClass.facebookInterstitialId,
           arguments: LoanDescriptionArguments(
             loanName: LocaleKeys.digitalGoldGuidance.tr(),
-            titleList:
-                parseStringToList(LocaleKeys.digitalGoldGuidanceTitleList.tr()),
-            titleOverViewList: parseStringToList(
-                LocaleKeys.digitalGoldGuidanceTitleOverViewList.tr()),
+            titleList: parseStringToList(LocaleKeys.digitalGoldGuidanceTitleList.tr()),
+            titleOverViewList: parseStringToList(LocaleKeys.digitalGoldGuidanceTitleOverViewList.tr()),
           ),
         );
 
@@ -980,10 +862,8 @@ class _HomeScreenState extends State<HomeScreen> {
           fbInterID: myAdsIdClass.facebookInterstitialId,
           arguments: LoanDescriptionArguments(
             loanName: LocaleKeys.mutualFundsGuidance.tr(),
-            titleList:
-                parseStringToList(LocaleKeys.mutualFundsGuidanceTitleList.tr()),
-            titleOverViewList: parseStringToList(
-                LocaleKeys.mutualFundsGuidanceTitleOverViewList.tr()),
+            titleList: parseStringToList(LocaleKeys.mutualFundsGuidanceTitleList.tr()),
+            titleOverViewList: parseStringToList(LocaleKeys.mutualFundsGuidanceTitleOverViewList.tr()),
           ),
         );
 
@@ -999,8 +879,7 @@ class _HomeScreenState extends State<HomeScreen> {
             imgURl: AssetUtils.icGroupLoan,
             loanName: LocaleKeys.levelUpLoans.tr(),
             subTitle: LocaleKeys.levelUpLoansSubTitle.tr(),
-            eligibilityCriteria:
-                LocaleKeys.levelUpLoansEligibilityCriteria.tr(),
+            eligibilityCriteria: LocaleKeys.levelUpLoansEligibilityCriteria.tr(),
             documents: LocaleKeys.levelUpLoansDocuments.tr(),
             tenureDescription: LocaleKeys.levelUpLoansTenureDescription.tr(),
             interest: LocaleKeys.levelUpLoansInterest.tr(),
@@ -1015,11 +894,9 @@ class _HomeScreenState extends State<HomeScreen> {
             description3: LocaleKeys.levelUpLoansDescription3.tr(),
             lable4: LocaleKeys.levelUpLoansLable4.tr(),
             description4: LocaleKeys.levelUpLoansDescription4.tr(),
-            takePoints:
-                parseStringToList(LocaleKeys.levelUpLoansTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.levelUpLoansTakePoints.tr()),
             take: parseStringToList(LocaleKeys.levelUpLoansTake.tr()),
-            notTakePoints:
-                parseStringToList(LocaleKeys.levelUpLoansNotTakePoints.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.levelUpLoansNotTakePoints.tr()),
             notTake: parseStringToList(LocaleKeys.levelUpLoansNotTake.tr()),
           ),
         );
@@ -1032,16 +909,14 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
-        child: BounceClickWidget(
-            onTap: onTap, child: Image(image: AssetImage(img))),
+        child: BounceClickWidget(onTap: onTap, child: Image(image: AssetImage(img))),
       ),
     );
   }
 }
 
 List<String> parseStringToList(String inputString) {
-  List<String> resultList =
-      inputString.substring(1, inputString.length - 2).split("','");
+  List<String> resultList = inputString.substring(1, inputString.length - 2).split("','");
 
   return resultList;
 }

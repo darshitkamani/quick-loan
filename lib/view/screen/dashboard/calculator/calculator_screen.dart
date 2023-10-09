@@ -47,6 +47,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       if (!kDebugMode) {
         await FirebaseAnalytics.instance.logEvent(name: screenName);
       }
+
       final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
 
       myAdsIdClass = await LoadAdsByApi().isAvailableAds(context: context, screenName: screenName);
@@ -64,6 +65,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         }
       }
       if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
         if (isCheckScreen) {
           provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
         } else {
@@ -166,7 +168,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       setState(() {
         nativeAd = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          nativeAdOptions: NativeAdOptions(),
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -208,9 +211,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       backgroundColor: const Color(0xFFFFE6C5),
       titleColor: Colors.black,
       descriptionColor: Colors.black,
-      buttonColor: const Color(0xff673AB7),
+      buttonColor: const Color(0xff447D58),
       buttonTitleColor: Colors.white,
-      buttonBorderColor: const Color(0xff673AB7),
+      buttonBorderColor: const Color(0xff447D58),
       listener: (result, value) {
         // print('---=- =-= -= -= -= - $result $value');
 
@@ -257,12 +260,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             physics: const BouncingScrollPhysics(),
             child: Column(
               children: [
+              const SizedBox(height: 10),
                 fbNativeBannerAd,
                 nativeAd == null || _nativeAdIsLoaded == false
                     ? const SizedBox()
                     : Container(
                         color: Colors.transparent,
-                        height: 330,
+                        height: 275,
                         alignment: Alignment.center,
                         child: AdWidget(ad: nativeAd!),
                       ),
@@ -359,7 +363,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                           child: Text(
                             'LOAN\nCALCULATOR',
                             textAlign: TextAlign.center,
-                            style: FontUtils.h26(fontWeight: FWT.bold),
+                            style: FontUtils.h20(fontWeight: FWT.bold, fontColor: ColorUtils.themeColor.oxff000000),
                           ),
                         ),
                       ],

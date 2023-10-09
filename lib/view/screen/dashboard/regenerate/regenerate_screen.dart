@@ -1,9 +1,9 @@
-import 'dart:async';
-
-import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/material.dart';
 import 'package:action_broadcast/action_broadcast.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:facebook_audience_network/facebook_audience_network.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:instant_pay/l10n/locale_keys.g.dart';
 import 'package:instant_pay/utilities/assets/asset_utils.dart';
@@ -15,13 +15,10 @@ import 'package:instant_pay/utilities/strings/strings_utils.dart';
 import 'package:instant_pay/view/screen/dashboard/dashboard_screen.dart';
 import 'package:instant_pay/view/screen/dashboard/home/loan_short_description_screen.dart';
 import 'package:instant_pay/view/screen/dashboard/home/model/available_ads_response.dart';
-import 'package:instant_pay/view/widget/ads_widget/fb_native_add.dart';
 import 'package:instant_pay/view/widget/ads_widget/interstitial_ads_widget.dart';
 import 'package:instant_pay/view/widget/ads_widget/load_ads_by_api.dart';
 import 'package:instant_pay/view/widget/loan_button_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:facebook_audience_network/facebook_audience_network.dart';
-import 'package:flutter/foundation.dart';
 
 class RegenerateScreen extends StatefulWidget {
   const RegenerateScreen({super.key});
@@ -32,22 +29,16 @@ class RegenerateScreen extends StatefulWidget {
 
 class _RegenerateScreenState extends State<RegenerateScreen> {
   String screenName = "RegenerateScreen";
-  bool isFacebookAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
-  bool isADXAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
-  bool isAdmobAdsShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
-  bool isAdShow =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
+  bool isFacebookAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
+  bool isADXAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
+  bool isAdmobAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
+  bool isAdShow = StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
   // List<String> availableAdsList = [];
 
   MyAdsIdClass myAdsIdClass = MyAdsIdClass();
   late StreamSubscription receiver;
 
-  bool isCheckScreen =
-      StorageUtils.prefs.getBool(StorageKeyUtils.isCheckScreenForAdInApp) ??
-          false;
+  bool isCheckScreen = StorageUtils.prefs.getBool(StorageKeyUtils.isCheckScreenForAdInApp) ?? false;
 
   NativeAd? adxNativeAd;
   bool adxNativeAdLoaded = false;
@@ -63,7 +54,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
     super.initState();
     initReceiver();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-     if (!kDebugMode) {
+      if (!kDebugMode) {
         await FirebaseAnalytics.instance.logEvent(name: screenName);
       }
       setState(() {
@@ -75,11 +66,9 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
           timer.cancel();
         });
       });
-      final provider =
-          Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+      final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
 
-      myAdsIdClass = await LoadAdsByApi()
-          .isAvailableAds(context: context, screenName: screenName);
+      myAdsIdClass = await LoadAdsByApi().isAvailableAds(context: context, screenName: screenName);
       setState(() {});
       if (myAdsIdClass.availableAdsList.contains("Native")) {
         // if (isFacebookAdsShow) {
@@ -101,29 +90,16 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
         }
       }
       if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
         if (isCheckScreen) {
-          provider.loadFBInterstitialAd(
-              myAdsIdClass: myAdsIdClass,
-              screenName: screenName,
-              fbID: myAdsIdClass.facebookInterstitialId,
-              googleID: myAdsIdClass.googleInterstitialId);
+          provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
         } else {
-          print(
-              "myAdsIdClass.isFacebook && isFacebookAdsShow interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
+          print("myAdsIdClass.isFacebook && isFacebookAdsShow interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
           if (myAdsIdClass.isFacebook && isFacebookAdsShow) {
-            provider.loadFBInterstitialAd(
-                myAdsIdClass: myAdsIdClass,
-                screenName: screenName,
-                fbID: myAdsIdClass.facebookInterstitialId,
-                googleID: myAdsIdClass.googleInterstitialId);
+            provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
           }
           if (myAdsIdClass.isGoogle && isADXAdsShow) {
-            provider.loadAdxInterstitialAd(
-                myAdsIdClass: myAdsIdClass,
-                screenName: screenName,
-                context: context,
-                fbInterID: myAdsIdClass.facebookInterstitialId,
-                googleInterID: myAdsIdClass.googleInterstitialId);
+            provider.loadAdxInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, context: context, fbInterID: myAdsIdClass.facebookInterstitialId, googleInterID: myAdsIdClass.googleInterstitialId);
           }
         }
       }
@@ -135,35 +111,20 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
       print('$screenName Data ----> ${intent.extras}');
       switch (intent.action) {
         case 'LoadAd':
-          final provider = Provider.of<InterstitialAdsWidgetProvider>(context,
-              listen: false);
-          myAdsIdClass = await LoadAdsByApi()
-              .isAvailableAds(context: context, screenName: screenName);
+          final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+          myAdsIdClass = await LoadAdsByApi().isAvailableAds(context: context, screenName: screenName);
           setState(() {});
           if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+            print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
             if (isCheckScreen) {
-              provider.loadFBInterstitialAd(
-                  myAdsIdClass: myAdsIdClass,
-                  screenName: screenName,
-                  fbID: myAdsIdClass.facebookInterstitialId,
-                  googleID: myAdsIdClass.googleInterstitialId);
+              provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
             } else {
-              print(
-                  "myAdsIdClass.isFacebook && isFacebookAdsShow in receiver interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
+              print("myAdsIdClass.isFacebook && isFacebookAdsShow in receiver interstitial screenName --> $screenName --> ${myAdsIdClass.isFacebook} $isFacebookAdsShow");
               if (myAdsIdClass.isFacebook && isFacebookAdsShow) {
-                provider.loadFBInterstitialAd(
-                    myAdsIdClass: myAdsIdClass,
-                    screenName: screenName,
-                    fbID: myAdsIdClass.facebookInterstitialId,
-                    googleID: myAdsIdClass.googleInterstitialId);
+                provider.loadFBInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, fbID: myAdsIdClass.facebookInterstitialId, googleID: myAdsIdClass.googleInterstitialId);
               }
               if (myAdsIdClass.isGoogle && isADXAdsShow) {
-                provider.loadAdxInterstitialAd(
-                    myAdsIdClass: myAdsIdClass,
-                    screenName: screenName,
-                    context: context,
-                    fbInterID: myAdsIdClass.facebookInterstitialId,
-                    googleInterID: myAdsIdClass.googleInterstitialId);
+                provider.loadAdxInterstitialAd(myAdsIdClass: myAdsIdClass, screenName: screenName, context: context, fbInterID: myAdsIdClass.facebookInterstitialId, googleInterID: myAdsIdClass.googleInterstitialId);
               }
             }
           }
@@ -174,16 +135,14 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
   }
 
   loadAdxNativeAd({String isCalledFrom = 'init'}) async {
-    print(
-        'Screen name loadNativeAd() ---> $screenName isCalledFrom --> $isCalledFrom ');
+    print('Screen name loadNativeAd() ---> $screenName isCalledFrom --> $isCalledFrom ');
 
-    String nativeAdId =
-        myAdsIdClass.googleNativeId; //  AdsUnitId().getGoogleNativeAdId();
+    String nativeAdId = myAdsIdClass.googleNativeId; //  AdsUnitId().getGoogleNativeAdId();
     if (nativeAdId != '') {
       setState(() {
         adxNativeAd = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -205,15 +164,10 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
 
   updatePrefsResponse({required String adType}) {
     Timer(const Duration(seconds: 1), () {
-      isFacebookAdsShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ??
-              false;
-      isADXAdsShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
-      isAdmobAdsShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
-      isAdShow =
-          StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
+      isFacebookAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowFacebookAds) ?? false;
+      isADXAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowADXAds) ?? false;
+      isAdmobAdsShow = StorageUtils.prefs.getBool(StorageKeyUtils.isShowAdmobAds) ?? false;
+      isAdShow = StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
       setState(() {});
       if (isAdmobAdsShow) {
         setState(() {
@@ -233,9 +187,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
   //   updatePrefsResponse(adType: 'Native');
   // }
   _showFBNativeAd({required String isCalledFrom}) {
-    bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool(
-            '${StorageKeyUtils.isFailedTwiceToLoadFbAdId}${myAdsIdClass.facebookNativeId}') ??
-        false;
+    bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}${myAdsIdClass.facebookNativeId}') ?? false;
 
     if (myAdsIdClass.facebookNativeId.isEmpty || isFailedTwiceToLoadFbAdId) {
       loadAdxNativeAd(isCalledFrom: isCalledFrom);
@@ -248,8 +200,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
   }
 
   Widget loadFbNativeAd(String adId, {String isCalledFrom = 'init'}) {
-    print(
-        'Screen name loadFbNativeAd() ---> $screenName isCalledFrom -->$isCalledFrom ');
+    print('Screen name loadFbNativeAd() ---> $screenName isCalledFrom -->$isCalledFrom ');
 
     String nativeAdId = adId;
     // AdsUnitId().getFacebookNativeAdId();
@@ -270,9 +221,9 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
       backgroundColor: const Color(0xFFFFE6C5),
       titleColor: Colors.black,
       descriptionColor: Colors.black,
-      buttonColor: const Color(0xff673AB7),
+      buttonColor: const Color(0xff447D58),
       buttonTitleColor: Colors.white,
-      buttonBorderColor: const Color(0xff673AB7),
+      buttonBorderColor: const Color(0xff447D58),
       listener: (result, value) {
         // print('---=- =-= -= -= -= - $result $value');
 
@@ -281,13 +232,10 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
           StorageUtils.prefs.setBool(StorageKeyUtils.isShowFacebookAds, false);
           StorageUtils.prefs.setBool(StorageKeyUtils.isShowADXAds, true);
           StorageUtils.prefs.setBool(StorageKeyUtils.isShowAdmobAds, true);
-          bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool(
-                  '${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId') ??
-              false;
+          bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs.getBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId') ?? false;
 
           if (!isFailedTwiceToLoadFbAdId) {
-            StorageUtils.prefs.setBool(
-                '${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId', true);
+            StorageUtils.prefs.setBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$adId', true);
             loadAdxNativeAd(isCalledFrom: 'fbNativeFunction');
           }
         }
@@ -298,9 +246,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
 
   @override
   void dispose() {
-    if (receiver != null) {
-      receiver.cancel();
-    }
+    receiver.cancel();
     if (adxNativeAd != null) {
       adxNativeAd!.dispose();
     }
@@ -325,8 +271,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
     ];
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pushAndRemoveUntil(context,
-            MaterialPageRoute(builder: (builder) {
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder) {
           return const DashboardScreen();
         }), (route) => false);
         return false;
@@ -335,13 +280,12 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
           appBar: AppBar(
             leading: IconButton(
                 onPressed: () {
-                  Navigator.pushAndRemoveUntil(context,
-                      MaterialPageRoute(builder: (builder) {
+                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (builder) {
                     return const DashboardScreen();
                   }), (route) => false);
                 },
                 icon: const Icon(Icons.arrow_back_ios_new_outlined)),
-            backgroundColor: ColorUtils.themeColor.oxff673AB7,
+            backgroundColor: ColorUtils.themeColor.oxff447D58,
             centerTitle: true,
             title: Text(
               LocaleKeys.ExploreLoans.tr(),
@@ -358,11 +302,12 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
                   physics: const BouncingScrollPhysics(),
                   child: Column(
                     children: [
+                    const SizedBox(height: 10),
                       fbNativeAd,
                       (adxNativeAdLoaded && adxNativeAd != null)
                           ? Container(
                               color: Colors.transparent,
-                              height: 330.0,
+                              height: 275,
                               alignment: Alignment.center,
                               child: AdWidget(ad: adxNativeAd!),
                             )
@@ -370,8 +315,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         child: GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 3,
                             crossAxisSpacing: 2,
                             mainAxisSpacing: 2,
@@ -383,13 +327,11 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
                             return LoanButtonWidget(
                               title: loanProductsNameList[index]['name'],
                               titleWidget: Image(
-                                image:
-                                    AssetImage(loanProductsList[index]['img']),
+                                image: AssetImage(loanProductsList[index]['img']),
                                 height: 60,
                               ),
                               onTap: () {
-                                getLoanDetails(
-                                    loanProductsList[index]['name']!);
+                                getLoanDetails(loanProductsList[index]['name']!);
                               },
                             );
                           },
@@ -441,11 +383,8 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
   ];
 
   getLoanDetails(String loanName) {
-    if (receiver != null) {
-      receiver.cancel();
-    }
-    final provider =
-        Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
+    receiver.cancel();
+    final provider = Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
     switch (loanName) {
       case cashLoan:
         return provider.showFbOrAdxOrAdmobInterstitialAd(
@@ -476,8 +415,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             description4: LocaleKeys.cashLoanDescription4.tr(),
             takePoints: parseStringToList(LocaleKeys.cashLoanTakePoints.tr()),
             take: parseStringToList(LocaleKeys.cashLoanTake.tr()),
-            notTakePoints:
-                parseStringToList(LocaleKeys.cashLoanNotTakePoints.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.cashLoanNotTakePoints.tr()),
             notTake: parseStringToList(LocaleKeys.cashLoanNotTake.tr()),
           ),
         );
@@ -494,8 +432,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             imgURl: AssetUtils.icBusinessLoan,
             loanName: LocaleKeys.businessLoan.tr(),
             subTitle: LocaleKeys.businessLoanSubTitle.tr(),
-            eligibilityCriteria:
-                LocaleKeys.businessLoanEligibilityCriteria.tr(),
+            eligibilityCriteria: LocaleKeys.businessLoanEligibilityCriteria.tr(),
             documents: LocaleKeys.businessLoanDocuments.tr(),
             tenureDescription: LocaleKeys.businessLoanTenureDescription.tr(),
             interest: LocaleKeys.businessLoanInterest.tr(),
@@ -510,11 +447,9 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             description3: LocaleKeys.businessLoanDescription3.tr(),
             lable4: LocaleKeys.businessLoanLable4.tr(),
             description4: LocaleKeys.businessLoanDescription4.tr(),
-            takePoints:
-                parseStringToList(LocaleKeys.businessLoanTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.businessLoanTakePoints.tr()),
             take: parseStringToList(LocaleKeys.businessLoanTake.tr()),
-            notTakePoints:
-                parseStringToList(LocaleKeys.businessLoanNotTakePoints.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.businessLoanNotTakePoints.tr()),
             notTake: parseStringToList(LocaleKeys.businessLoanNotTake.tr()),
           ),
         );
@@ -546,11 +481,9 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             description3: LocaleKeys.newHomeLoanDescription3.tr(),
             lable4: LocaleKeys.newHomeLoanLable4.tr(),
             description4: LocaleKeys.newHomeLoanDescription4.tr(),
-            takePoints:
-                parseStringToList(LocaleKeys.newHomeLoanTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.newHomeLoanTakePoints.tr()),
             take: parseStringToList(LocaleKeys.newHomeLoanTake.tr()),
-            notTakePoints:
-                parseStringToList(LocaleKeys.newHomeLoanNotTakePoints.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.newHomeLoanNotTakePoints.tr()),
             notTake: parseStringToList(LocaleKeys.newHomeLoanNotTake.tr()),
           ),
         );
@@ -567,11 +500,9 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             imgURl: AssetUtils.icHomeConstructionLoan,
             loanName: LocaleKeys.homeConstructionLoan.tr(),
             subTitle: LocaleKeys.homeConstructionLoanSubTitle.tr(),
-            eligibilityCriteria:
-                LocaleKeys.homeConstructionLoanEligibilityCriteria.tr(),
+            eligibilityCriteria: LocaleKeys.homeConstructionLoanEligibilityCriteria.tr(),
             documents: LocaleKeys.homeConstructionLoanDocuments.tr(),
-            tenureDescription:
-                LocaleKeys.homeConstructionLoanTenureDescription.tr(),
+            tenureDescription: LocaleKeys.homeConstructionLoanTenureDescription.tr(),
             interest: LocaleKeys.homeConstructionLoanInterest.tr(),
             loanAmount: LocaleKeys.homeConstructionLoanLoanAmount.tr(),
             processingFees: LocaleKeys.homeConstructionLoanProcessingFees.tr(),
@@ -584,13 +515,10 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             description3: LocaleKeys.homeConstructionLoanDescription3.tr(),
             lable4: LocaleKeys.homeConstructionLoanLable4.tr(),
             description4: LocaleKeys.homeConstructionLoanDescription4.tr(),
-            takePoints: parseStringToList(
-                LocaleKeys.homeConstructionLoanTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.homeConstructionLoanTakePoints.tr()),
             take: parseStringToList(LocaleKeys.homeConstructionLoanTake.tr()),
-            notTakePoints: parseStringToList(
-                LocaleKeys.homeConstructionLoanNotTakePoints.tr()),
-            notTake:
-                parseStringToList(LocaleKeys.homeConstructionLoanNotTake.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.homeConstructionLoanNotTakePoints.tr()),
+            notTake: parseStringToList(LocaleKeys.homeConstructionLoanNotTake.tr()),
           ),
         );
 
@@ -606,15 +534,12 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             imgURl: AssetUtils.icLoanAgainstPropertyLoan,
             loanName: LocaleKeys.loanAgainstProperty.tr(),
             subTitle: LocaleKeys.loanAgainstPropertyLoanSubTitle.tr(),
-            eligibilityCriteria:
-                LocaleKeys.loanAgainstPropertyLoanEligibilityCriteria.tr(),
+            eligibilityCriteria: LocaleKeys.loanAgainstPropertyLoanEligibilityCriteria.tr(),
             documents: LocaleKeys.loanAgainstPropertyLoanDocuments.tr(),
-            tenureDescription:
-                LocaleKeys.loanAgainstPropertyLoanTenureDescription.tr(),
+            tenureDescription: LocaleKeys.loanAgainstPropertyLoanTenureDescription.tr(),
             interest: LocaleKeys.loanAgainstPropertyLoanInterest.tr(),
             loanAmount: LocaleKeys.loanAgainstPropertyLoanLoanAmount.tr(),
-            processingFees:
-                LocaleKeys.loanAgainstPropertyLoanProcessingFees.tr(),
+            processingFees: LocaleKeys.loanAgainstPropertyLoanProcessingFees.tr(),
             buttonLable: LocaleKeys.loanAgainstPropertyLoanButtonLable.tr(),
             lable1: LocaleKeys.loanAgainstPropertyLoanLable1.tr(),
             description1: LocaleKeys.loanAgainstPropertyLoanDescription1.tr(),
@@ -624,14 +549,10 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             description3: LocaleKeys.loanAgainstPropertyLoanDescription3.tr(),
             lable4: LocaleKeys.loanAgainstPropertyLoanLable4.tr(),
             description4: LocaleKeys.loanAgainstPropertyLoanDescription4.tr(),
-            takePoints: parseStringToList(
-                LocaleKeys.loanAgainstPropertyLoanTakePoints.tr()),
-            take:
-                parseStringToList(LocaleKeys.loanAgainstPropertyLoanTake.tr()),
-            notTakePoints: parseStringToList(
-                LocaleKeys.loanAgainstPropertyLoanNotTakePoints.tr()),
-            notTake: parseStringToList(
-                LocaleKeys.loanAgainstPropertyLoanNotTake.tr()),
+            takePoints: parseStringToList(LocaleKeys.loanAgainstPropertyLoanTakePoints.tr()),
+            take: parseStringToList(LocaleKeys.loanAgainstPropertyLoanTake.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.loanAgainstPropertyLoanNotTakePoints.tr()),
+            notTake: parseStringToList(LocaleKeys.loanAgainstPropertyLoanNotTake.tr()),
           ),
         );
 
@@ -647,11 +568,9 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             imgURl: AssetUtils.icSecuredLoan1,
             loanName: LocaleKeys.securedBusinessLoan.tr(),
             subTitle: LocaleKeys.securedBusinessLoanSubTitle.tr(),
-            eligibilityCriteria:
-                LocaleKeys.securedBusinessLoanEligibilityCriteria.tr(),
+            eligibilityCriteria: LocaleKeys.securedBusinessLoanEligibilityCriteria.tr(),
             documents: LocaleKeys.securedBusinessLoanDocuments.tr(),
-            tenureDescription:
-                LocaleKeys.securedBusinessLoanTenureDescription.tr(),
+            tenureDescription: LocaleKeys.securedBusinessLoanTenureDescription.tr(),
             interest: LocaleKeys.securedBusinessLoanInterest.tr(),
             loanAmount: LocaleKeys.securedBusinessLoanLoanAmount.tr(),
             processingFees: LocaleKeys.securedBusinessLoanProcessingFees.tr(),
@@ -664,13 +583,10 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             description3: LocaleKeys.securedBusinessLoanDescription3.tr(),
             lable4: LocaleKeys.securedBusinessLoanLable4.tr(),
             description4: LocaleKeys.securedBusinessLoanDescription4.tr(),
-            takePoints: parseStringToList(
-                LocaleKeys.securedBusinessLoanTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.securedBusinessLoanTakePoints.tr()),
             take: parseStringToList(LocaleKeys.securedBusinessLoanTake.tr()),
-            notTakePoints: parseStringToList(
-                LocaleKeys.securedBusinessLoanNotTakePoints.tr()),
-            notTake:
-                parseStringToList(LocaleKeys.securedBusinessLoanNotTake.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.securedBusinessLoanNotTakePoints.tr()),
+            notTake: parseStringToList(LocaleKeys.securedBusinessLoanNotTake.tr()),
           ),
         );
 
@@ -686,8 +602,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             imgURl: AssetUtils.icPersonalLoanImage,
             loanName: LocaleKeys.personalLoan.tr(),
             subTitle: LocaleKeys.personalLoanSubTitle.tr(),
-            eligibilityCriteria:
-                LocaleKeys.personalLoanEligibilityCriteria.tr(),
+            eligibilityCriteria: LocaleKeys.personalLoanEligibilityCriteria.tr(),
             documents: LocaleKeys.personalLoanDocuments.tr(),
             tenureDescription: LocaleKeys.personalLoanTenureDescription.tr(),
             interest: LocaleKeys.personalLoanInterest.tr(),
@@ -702,11 +617,9 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             description3: LocaleKeys.personalLoanDescription3.tr(),
             lable4: LocaleKeys.personalLoanLable4.tr(),
             description4: LocaleKeys.personalLoanDescription4.tr(),
-            takePoints:
-                parseStringToList(LocaleKeys.personalLoanTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.personalLoanTakePoints.tr()),
             take: parseStringToList(LocaleKeys.personalLoanTake.tr()),
-            notTakePoints:
-                parseStringToList(LocaleKeys.personalLoanNotTakePoints.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.personalLoanNotTakePoints.tr()),
             notTake: parseStringToList(LocaleKeys.personalLoanNotTake.tr()),
           ),
         );
@@ -738,11 +651,9 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             description3: LocaleKeys.instantLoanDescription3.tr(),
             lable4: LocaleKeys.instantLoanLable4.tr(),
             description4: LocaleKeys.instantLoanDescription4.tr(),
-            takePoints:
-                parseStringToList(LocaleKeys.instantLoanTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.instantLoanTakePoints.tr()),
             take: parseStringToList(LocaleKeys.instantLoanTake.tr()),
-            notTakePoints:
-                parseStringToList(LocaleKeys.instantLoanNotTakePoints.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.instantLoanNotTakePoints.tr()),
             notTake: parseStringToList(LocaleKeys.instantLoanNotTake.tr()),
           ),
         );
@@ -759,8 +670,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             imgURl: AssetUtils.icLevelUpLoanPng,
             loanName: LocaleKeys.levelUpLoans.tr(),
             subTitle: LocaleKeys.levelUpLoansSubTitle.tr(),
-            eligibilityCriteria:
-                LocaleKeys.levelUpLoansEligibilityCriteria.tr(),
+            eligibilityCriteria: LocaleKeys.levelUpLoansEligibilityCriteria.tr(),
             documents: LocaleKeys.levelUpLoansDocuments.tr(),
             tenureDescription: LocaleKeys.levelUpLoansTenureDescription.tr(),
             interest: LocaleKeys.levelUpLoansInterest.tr(),
@@ -775,11 +685,9 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             description3: LocaleKeys.levelUpLoansDescription3.tr(),
             lable4: LocaleKeys.levelUpLoansLable4.tr(),
             description4: LocaleKeys.levelUpLoansDescription4.tr(),
-            takePoints:
-                parseStringToList(LocaleKeys.levelUpLoansTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.levelUpLoansTakePoints.tr()),
             take: parseStringToList(LocaleKeys.levelUpLoansTake.tr()),
-            notTakePoints:
-                parseStringToList(LocaleKeys.levelUpLoansNotTakePoints.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.levelUpLoansNotTakePoints.tr()),
             notTake: parseStringToList(LocaleKeys.levelUpLoansNotTake.tr()),
           ),
         );
@@ -794,10 +702,8 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
           fbInterID: myAdsIdClass.facebookInterstitialId,
           arguments: LoanDescriptionArguments(
             loanName: LocaleKeys.digitalGoldGuidance.tr(),
-            titleList:
-                parseStringToList(LocaleKeys.digitalGoldGuidanceTitleList.tr()),
-            titleOverViewList: parseStringToList(
-                LocaleKeys.digitalGoldGuidanceTitleOverViewList.tr()),
+            titleList: parseStringToList(LocaleKeys.digitalGoldGuidanceTitleList.tr()),
+            titleOverViewList: parseStringToList(LocaleKeys.digitalGoldGuidanceTitleOverViewList.tr()),
           ),
         );
 
@@ -811,10 +717,8 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
           fbInterID: myAdsIdClass.facebookInterstitialId,
           arguments: LoanDescriptionArguments(
             loanName: LocaleKeys.mutualFundsGuidance.tr(),
-            titleList:
-                parseStringToList(LocaleKeys.mutualFundsGuidanceTitleList.tr()),
-            titleOverViewList: parseStringToList(
-                LocaleKeys.mutualFundsGuidanceTitleOverViewList.tr()),
+            titleList: parseStringToList(LocaleKeys.mutualFundsGuidanceTitleList.tr()),
+            titleOverViewList: parseStringToList(LocaleKeys.mutualFundsGuidanceTitleOverViewList.tr()),
           ),
         );
 
@@ -830,8 +734,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             imgURl: AssetUtils.icGroupLoan,
             loanName: LocaleKeys.levelUpLoans.tr(),
             subTitle: LocaleKeys.levelUpLoansSubTitle.tr(),
-            eligibilityCriteria:
-                LocaleKeys.levelUpLoansEligibilityCriteria.tr(),
+            eligibilityCriteria: LocaleKeys.levelUpLoansEligibilityCriteria.tr(),
             documents: LocaleKeys.levelUpLoansDocuments.tr(),
             tenureDescription: LocaleKeys.levelUpLoansTenureDescription.tr(),
             interest: LocaleKeys.levelUpLoansInterest.tr(),
@@ -846,11 +749,9 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
             description3: LocaleKeys.levelUpLoansDescription3.tr(),
             lable4: LocaleKeys.levelUpLoansLable4.tr(),
             description4: LocaleKeys.levelUpLoansDescription4.tr(),
-            takePoints:
-                parseStringToList(LocaleKeys.levelUpLoansTakePoints.tr()),
+            takePoints: parseStringToList(LocaleKeys.levelUpLoansTakePoints.tr()),
             take: parseStringToList(LocaleKeys.levelUpLoansTake.tr()),
-            notTakePoints:
-                parseStringToList(LocaleKeys.levelUpLoansNotTakePoints.tr()),
+            notTakePoints: parseStringToList(LocaleKeys.levelUpLoansNotTakePoints.tr()),
             notTake: parseStringToList(LocaleKeys.levelUpLoansNotTake.tr()),
           ),
         );
@@ -859,8 +760,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
   }
 
   List<String> parseStringToList(String inputString) {
-    List<String> resultList =
-        inputString.substring(1, inputString.length - 2).split("','");
+    List<String> resultList = inputString.substring(1, inputString.length - 2).split("','");
     return resultList;
   }
 

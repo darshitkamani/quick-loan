@@ -162,9 +162,11 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
       }
     }
     if (state == AppLifecycleState.inactive) {
-      isNeedToCheckAddLoad = false;
+      // isNeedToCheckAddLoad = false;
+      debugPrint('STATE ----->>>>>> >>>>>> UPDATED ${state.name} isNeedToCheckAddLoad $isNeedToCheckAddLoad. . . . . . . . . . . .');
     }
     if (state == AppLifecycleState.paused) {
+      debugPrint('STATE ----->>>>>> >>>>>> UPDATED ${state.name} isNeedToCheckAddLoad $isNeedToCheckAddLoad. . . . . . . . . . . .');
       isNeedToCheckAddLoad = true;
     }
   }
@@ -196,10 +198,10 @@ class _DashboardScreenState extends State<DashboardScreen> with WidgetsBindingOb
             BottomNavigationBarItem(icon: const Icon(Icons.person), label: LocaleKeys.Profile.tr()),
           ],
           currentIndex: selectedIndex,
-          selectedItemColor: ColorUtils.themeColor.oxff673AB7,
+          selectedItemColor: ColorUtils.themeColor.oxff447D58,
           unselectedItemColor: ColorUtils.themeColor.oxff000000.withOpacity(0.6),
           unselectedLabelStyle: FontUtils.h12(fontColor: ColorUtils.themeColor.oxff000000.withOpacity(0.6), fontWeight: FWT.semiBold),
-          selectedLabelStyle: FontUtils.h14(fontColor: ColorUtils.themeColor.oxff673AB7, fontWeight: FWT.bold),
+          selectedLabelStyle: FontUtils.h14(fontColor: ColorUtils.themeColor.oxff447D58, fontWeight: FWT.bold),
           showUnselectedLabels: true,
           type: BottomNavigationBarType.fixed,
           onTap: (int value) {
