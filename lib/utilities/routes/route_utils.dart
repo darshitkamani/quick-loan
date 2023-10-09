@@ -1,23 +1,23 @@
 // ignore_for_file: dead_code
 
 import 'package:flutter/material.dart';
-import 'package:instant_pay/view/screen/dashboard/calculator/eligibility_calculator_screen%20copy.dart';
-import 'package:instant_pay/view/screen/dashboard/calculator/emi_calculator_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/dash/clarification_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/dash/dashboard_more_loans_details_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/dash/loan_advantage_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/dash/loan_apply_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/dashboard_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/home/case_study_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/home/loan_full_description.dart';
-import 'package:instant_pay/view/screen/dashboard/home/loan_short_description_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/investment/investment_details_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/profile/privacy_policies.dart';
-import 'package:instant_pay/view/screen/dashboard/profile/terms_condition.dart';
-import 'package:instant_pay/view/screen/dashboard/regenerate/regenerate_screen.dart';
-import 'package:instant_pay/view/screen/help/help_screen.dart';
-import 'package:instant_pay/view/screen/help/question_answer_screen.dart';
-import 'package:instant_pay/view/screen/splash/view/splash_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/calculator/eligibility_calculator_screen%20copy.dart';
+import 'package:quick_loan/view/screen/dashboard/calculator/emi_calculator_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/dash/clarification_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/dash/dashboard_more_loans_details_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/dash/loan_advantage_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/dash/loan_apply_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/dashboard_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/home/case_study_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/home/loan_full_description.dart';
+import 'package:quick_loan/view/screen/dashboard/home/loan_short_description_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/investment/investment_details_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/profile/privacy_policies.dart';
+import 'package:quick_loan/view/screen/dashboard/profile/terms_condition.dart';
+import 'package:quick_loan/view/screen/dashboard/regenerate/regenerate_screen.dart';
+import 'package:quick_loan/view/screen/help/help_screen.dart';
+import 'package:quick_loan/view/screen/help/question_answer_screen.dart';
+import 'package:quick_loan/view/screen/splash/view/splash_screen.dart';
 
 import '../../view/screen/dashboard/home/laon_application_process_screen.dart';
 

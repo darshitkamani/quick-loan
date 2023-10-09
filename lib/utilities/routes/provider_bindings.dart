@@ -1,6 +1,6 @@
-import 'package:instant_pay/view/screen/splash/provider/splash_provider.dart';
-import 'package:instant_pay/view/widget/ads_widget/app_open_widget.dart';
-import 'package:instant_pay/view/widget/ads_widget/interstitial_ads_widget.dart';
+import 'package:quick_loan/view/screen/splash/provider/splash_provider.dart';
+import 'package:quick_loan/view/widget/ads_widget/app_open_widget.dart';
+import 'package:quick_loan/view/widget/ads_widget/interstitial_ads_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 

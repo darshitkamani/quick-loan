@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:instant_pay/utilities/assets/asset_utils.dart';
-import 'package:instant_pay/utilities/colors/color_utils.dart';
-import 'package:instant_pay/utilities/font/font_utils.dart';
-import 'package:instant_pay/utilities/routes/routes.dart';
-import 'package:instant_pay/utilities/strings/strings_utils.dart';
-import 'package:instant_pay/view/screen/dashboard/home/loan_short_description_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/home/model/available_ads_response.dart';
-import 'package:instant_pay/view/widget/ads_widget/interstitial_ads_widget.dart';
-import 'package:instant_pay/view/widget/bounce_click_widget.dart';
-import 'package:instant_pay/view/widget/lottie_ad_widget.dart';
+import 'package:quick_loan/utilities/assets/asset_utils.dart';
+import 'package:quick_loan/utilities/colors/color_utils.dart';
+import 'package:quick_loan/utilities/font/font_utils.dart';
+import 'package:quick_loan/utilities/routes/routes.dart';
+import 'package:quick_loan/utilities/strings/strings_utils.dart';
+import 'package:quick_loan/view/screen/dashboard/home/loan_short_description_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/home/model/available_ads_response.dart';
+import 'package:quick_loan/view/widget/ads_widget/interstitial_ads_widget.dart';
+import 'package:quick_loan/view/widget/bounce_click_widget.dart';
+import 'package:quick_loan/view/widget/lottie_ad_widget.dart';
 import 'package:provider/provider.dart';
 
 class InvestmentScreen extends StatefulWidget {

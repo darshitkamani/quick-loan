@@ -5,19 +5,18 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:lottie/lottie.dart';
-import 'package:instant_pay/utilities/assets/asset_utils.dart';
-import 'package:instant_pay/utilities/colors/color_utils.dart';
-import 'package:instant_pay/utilities/env/env_utils.dart';
-import 'package:instant_pay/utilities/font/font_utils.dart';
-import 'package:instant_pay/utilities/storage/storage.dart';
-import 'package:instant_pay/view/screen/dashboard/home/model/available_ads_response.dart';
-import 'package:instant_pay/view/widget/center_text_button_widget.dart';
+import 'package:quick_loan/utilities/assets/asset_utils.dart';
+import 'package:quick_loan/utilities/colors/color_utils.dart';
+import 'package:quick_loan/utilities/env/env_utils.dart';
+import 'package:quick_loan/utilities/font/font_utils.dart';
+import 'package:quick_loan/utilities/storage/storage.dart';
+import 'package:quick_loan/view/screen/dashboard/home/model/available_ads_response.dart';
+import 'package:quick_loan/view/widget/center_text_button_widget.dart';
 
 class ConnectivityIndicatorWidget extends StatefulWidget {
   const ConnectivityIndicatorWidget({super.key});
@@ -162,9 +161,6 @@ class ConnectivityService {
         bool isUserFirstTime =
             StorageUtils.prefs.getBool(StorageKeyUtils.isUserFirstTime) ??
                 false;
-        if (kDebugMode) {
-          return;
-        }
         if (isUserFirstTime == false) {
           Timer(const Duration(seconds: 1), () async {
             String prefsAvailableScreens = StorageUtils.prefs
@@ -177,7 +173,7 @@ class ConnectivityService {
                 headers: {"secret_key": dotenv.get(EnvUtils.secretKey)},
               );
               if (res.statusCode == 200) {
-                print("ABC ===> DEF ");
+                // print("ABC ===> DEF ");
 
                 AvailableScreenAdsModel availableScreenAdsModel =
                     AvailableScreenAdsModel.fromJson(jsonDecode(res.body));

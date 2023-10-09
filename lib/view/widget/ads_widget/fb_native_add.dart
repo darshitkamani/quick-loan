@@ -1,7 +1,7 @@
 // import 'package:facebook_audience_network/facebook_audience_network.dart';
 // import 'package:flutter/foundation.dart';
 // import 'package:flutter/material.dart';
-// import 'package:instant_pay/utilities/storage/storage.dart';
+// import 'package:quick_loan/utilities/storage/storage.dart';
 
 // Widget loadFbNativeAd(String adId) {
 //   String nativeAdId = adId;

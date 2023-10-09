@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:instant_pay/utilities/colors/color.dart';
-import 'package:instant_pay/utilities/storage/storage.dart';
-import 'package:instant_pay/utilities/storage/storage_utils.dart';
-import 'package:instant_pay/view/screen/splash/view/splash_screen.dart';
-import 'package:instant_pay/view/widget/internet_connectivity_widget.dart';
+import 'package:quick_loan/utilities/colors/color.dart';
+import 'package:quick_loan/utilities/storage/storage.dart';
+import 'package:quick_loan/utilities/storage/storage_utils.dart';
+import 'package:quick_loan/view/screen/splash/view/splash_screen.dart';
+import 'package:quick_loan/view/widget/internet_connectivity_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'utilities/routes/provider_bindings.dart';
@@ -63,13 +63,14 @@ class _QuickLoanAppState extends State<QuickLoanApp>
     with WidgetsBindingObserver {
   late ConnectivityIndicatorWidget indicator;
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
-  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-    if (!kDebugMode) {
+      if (!kDebugMode) {
         await analytics.logEvent(name: 'EVENT_STARTED');
       }
     });

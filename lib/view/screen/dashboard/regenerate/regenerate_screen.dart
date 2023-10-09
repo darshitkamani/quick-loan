@@ -1,27 +1,24 @@
-import 'dart:async';
-
-import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/material.dart';
 import 'package:action_broadcast/action_broadcast.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:instant_pay/l10n/locale_keys.g.dart';
-import 'package:instant_pay/utilities/assets/asset_utils.dart';
-import 'package:instant_pay/utilities/colors/color.dart';
-import 'package:instant_pay/utilities/font/font_utils.dart';
-import 'package:instant_pay/utilities/routes/routes.dart';
-import 'package:instant_pay/utilities/storage/storage.dart';
-import 'package:instant_pay/utilities/strings/strings_utils.dart';
-import 'package:instant_pay/view/screen/dashboard/dashboard_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/home/loan_short_description_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/home/model/available_ads_response.dart';
-import 'package:instant_pay/view/widget/ads_widget/fb_native_add.dart';
-import 'package:instant_pay/view/widget/ads_widget/interstitial_ads_widget.dart';
-import 'package:instant_pay/view/widget/ads_widget/load_ads_by_api.dart';
-import 'package:instant_pay/view/widget/loan_button_widget.dart';
-import 'package:provider/provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:quick_loan/l10n/locale_keys.g.dart';
+import 'package:quick_loan/utilities/assets/asset_utils.dart';
+import 'package:quick_loan/utilities/colors/color.dart';
+import 'package:quick_loan/utilities/font/font_utils.dart';
+import 'package:quick_loan/utilities/routes/routes.dart';
+import 'package:quick_loan/utilities/storage/storage.dart';
+import 'package:quick_loan/utilities/strings/strings_utils.dart';
+import 'package:quick_loan/view/screen/dashboard/dashboard_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/home/loan_short_description_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/home/model/available_ads_response.dart';
+import 'package:quick_loan/view/widget/ads_widget/interstitial_ads_widget.dart';
+import 'package:quick_loan/view/widget/ads_widget/load_ads_by_api.dart';
+import 'package:quick_loan/view/widget/loan_button_widget.dart';
+import 'package:provider/provider.dart';
 
 class RegenerateScreen extends StatefulWidget {
   const RegenerateScreen({super.key});
@@ -63,7 +60,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
     super.initState();
     initReceiver();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-     if (!kDebugMode) {
+      if (!kDebugMode) {
         await FirebaseAnalytics.instance.logEvent(name: screenName);
       }
       setState(() {
@@ -101,6 +98,8 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
         }
       }
       if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        print(
+            'screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
         if (isCheckScreen) {
           provider.loadFBInterstitialAd(
               myAdsIdClass: myAdsIdClass,
@@ -141,6 +140,8 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
               .isAvailableAds(context: context, screenName: screenName);
           setState(() {});
           if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+            print(
+                'screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
             if (isCheckScreen) {
               provider.loadFBInterstitialAd(
                   myAdsIdClass: myAdsIdClass,
@@ -183,7 +184,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
       setState(() {
         adxNativeAd = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -298,9 +299,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
 
   @override
   void dispose() {
-    if (receiver != null) {
-      receiver.cancel();
-    }
+    receiver.cancel();
     if (adxNativeAd != null) {
       adxNativeAd!.dispose();
     }
@@ -358,11 +357,12 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
                   physics: const BouncingScrollPhysics(),
                   child: Column(
                     children: [
+                      const SizedBox(height: 10),
                       fbNativeAd,
                       (adxNativeAdLoaded && adxNativeAd != null)
                           ? Container(
                               color: Colors.transparent,
-                              height: 330.0,
+                              height: 275,
                               alignment: Alignment.center,
                               child: AdWidget(ad: adxNativeAd!),
                             )
@@ -441,9 +441,7 @@ class _RegenerateScreenState extends State<RegenerateScreen> {
   ];
 
   getLoanDetails(String loanName) {
-    if (receiver != null) {
-      receiver.cancel();
-    }
+    receiver.cancel();
     final provider =
         Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
     switch (loanName) {

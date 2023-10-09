@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:instant_pay/utilities/storage/storage.dart';
-import 'package:instant_pay/view/screen/dashboard/home/model/available_ads_response.dart';
+import 'package:quick_loan/utilities/storage/storage.dart';
+import 'package:quick_loan/view/screen/dashboard/home/model/available_ads_response.dart';
 
 class LoadAdsByApi {
   bool isFacebookAdsShow =
@@ -15,7 +15,7 @@ class LoadAdsByApi {
       StorageUtils.prefs.getBool(StorageKeyUtils.isAddShowInApp) ?? false;
 
   Future<MyAdsIdClass> isAvailableAds({
-    required BuildContext context,
+    BuildContext? context,
     required String screenName,
   }) async {
     MyAdsIdClass myAdsIdClass = MyAdsIdClass();

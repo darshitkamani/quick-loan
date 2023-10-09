@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:instant_pay/utilities/colors/color_utils.dart';
-import 'package:instant_pay/utilities/font/font_utils.dart';
+import 'package:quick_loan/utilities/colors/color_utils.dart';
+import 'package:quick_loan/utilities/font/font_utils.dart';
 
 class TermsAndConditionScreen extends StatelessWidget {
   const TermsAndConditionScreen({super.key});
@@ -65,7 +65,7 @@ You also agree not to use the App to engage in any activity that could harm the 
                   const SizedBox(height: 10),
                   Text(
                     '''
-The information provided by Quick Loan : LOAN GUIDE APP is for general informational purposes only and should not be considered as legal, financial, or professional advice. 
+The information provided by Instant Pay : LOAN GUIDE APP is for general informational purposes only and should not be considered as legal, financial, or professional advice. 
 
 While we strive to ensure the accuracy of the information, we cannot guarantee that it is error-free, complete, or up-to-date. 
 

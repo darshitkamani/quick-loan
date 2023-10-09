@@ -1,23 +1,19 @@
-import 'dart:async';
-
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/material.dart';
 import 'package:action_broadcast/action_broadcast.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:instant_pay/utilities/colors/color_utils.dart';
-import 'package:instant_pay/utilities/font/font_utils.dart';
-import 'package:instant_pay/utilities/routes/route_utils.dart';
-import 'package:instant_pay/utilities/storage/storage.dart';
-import 'package:instant_pay/view/screen/dashboard/home/loan_short_description_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/home/model/available_ads_response.dart';
-import 'package:instant_pay/view/widget/ads_widget/fb_native_add.dart';
-import 'package:instant_pay/view/widget/ads_widget/interstitial_ads_widget.dart';
-import 'package:instant_pay/view/widget/ads_widget/load_ads_by_api.dart';
-import 'package:instant_pay/view/widget/center_text_button_widget.dart';
-import 'package:provider/provider.dart';
-
 import 'package:facebook_audience_network/facebook_audience_network.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:quick_loan/utilities/colors/color_utils.dart';
+import 'package:quick_loan/utilities/font/font_utils.dart';
+import 'package:quick_loan/utilities/routes/route_utils.dart';
+import 'package:quick_loan/utilities/storage/storage.dart';
+import 'package:quick_loan/view/screen/dashboard/home/loan_short_description_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/home/model/available_ads_response.dart';
+import 'package:quick_loan/view/widget/ads_widget/interstitial_ads_widget.dart';
+import 'package:quick_loan/view/widget/ads_widget/load_ads_by_api.dart';
+import 'package:quick_loan/view/widget/center_text_button_widget.dart';
+import 'package:provider/provider.dart';
 
 class LoanFullDescriptionScreen extends StatefulWidget {
   final LoanDescriptionArguments arguments;
@@ -52,7 +48,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
     initReceiver();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-     if (!kDebugMode) {
+      if (!kDebugMode) {
         await FirebaseAnalytics.instance.logEvent(name: screenName);
       }
       final provider =
@@ -79,6 +75,8 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
         }
       }
       if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        print(
+            'screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
         if (isCheckScreen) {
           provider.loadFBInterstitialAd(
               myAdsIdClass: myAdsIdClass,
@@ -120,6 +118,8 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
           setState(() {});
 
           if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+            print(
+                'screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
             if (isCheckScreen) {
               provider.loadFBInterstitialAd(
                   myAdsIdClass: myAdsIdClass,
@@ -155,9 +155,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
   @override
   void dispose() {
     print("Receiver stopped");
-    if (receiver != null) {
-      receiver.cancel();
-    }
+    receiver.cancel();
 
     super.dispose();
   }
@@ -296,7 +294,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
       setState(() {
         adxNativeAd1 = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -325,7 +323,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
       setState(() {
         adxNativeAd2 = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -354,7 +352,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
       setState(() {
         adxNativeAd3 = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -383,7 +381,7 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
       setState(() {
         adxNativeAd4 = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -437,12 +435,13 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
                     height: 200,
                     fit: BoxFit.cover,
                   ),
+                  const SizedBox(height: 10),
                   fbNativeAd4,
                   _isAdxNativeAd4Loaded == false
                       ? const SizedBox()
                       : Container(
                           color: Colors.transparent,
-                          height: 330,
+                          height: 275,
                           alignment: Alignment.center,
                           child: AdWidget(ad: adxNativeAd4!),
                         ),
@@ -450,12 +449,13 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
                   loanWidget(widget.arguments.lable1 ?? '',
                       widget.arguments.description1 ?? ''),
                   sizedBox5(),
+                  const SizedBox(height: 10),
                   fbNativeAd1,
                   _isAdxNativeAd1Loaded == false
                       ? const SizedBox()
                       : Container(
                           color: Colors.transparent,
-                          height: 330,
+                          height: 275,
                           alignment: Alignment.center,
                           child: AdWidget(ad: adxNativeAd1!),
                         ),
@@ -463,12 +463,13 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
                   loanWidget(widget.arguments.lable2 ?? '',
                       widget.arguments.description2 ?? ''),
                   sizedBox5(),
+                  const SizedBox(height: 10),
                   fbNativeAd2,
                   _isAdxNativeAd2Loaded == false
                       ? const SizedBox()
                       : Container(
                           color: Colors.transparent,
-                          height: 330,
+                          height: 275,
                           alignment: Alignment.center,
                           child: AdWidget(ad: adxNativeAd2!),
                         ),
@@ -476,12 +477,13 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
                   loanWidget(widget.arguments.lable3 ?? '',
                       widget.arguments.description3 ?? ''),
                   sizedBox5(),
+                  const SizedBox(height: 10),
                   fbNativeAd3,
                   _isAdxNativeAd3Loaded == false
                       ? const SizedBox()
                       : Container(
                           color: Colors.transparent,
-                          height: 330,
+                          height: 275,
                           alignment: Alignment.center,
                           child: AdWidget(ad: adxNativeAd3!),
                         ),
@@ -494,16 +496,14 @@ class _LoanFullDescriptionScreenState extends State<LoanFullDescriptionScreen> {
                   //     ? const SizedBox()
                   //     : Container(
                   //         color: Colors.transparent,
-                  //         height: 330,
+                  //         height: 275,
                   //         alignment: Alignment.center,
                   //         child: AdWidget(ad: adxNativeAd4!),
                   //       ),
                   CenterTextButtonWidget(
                     title: widget.arguments.buttonLable ?? '',
                     onTap: () {
-                      if (receiver != null) {
-                        receiver.cancel();
-                      }
+                      receiver.cancel();
                       getRoute();
                     },
                   ),

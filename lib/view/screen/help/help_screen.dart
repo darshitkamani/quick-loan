@@ -1,23 +1,19 @@
-import 'dart:async';
-
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/material.dart';
 import 'package:action_broadcast/action_broadcast.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:instant_pay/utilities/assets/asset_utils.dart';
-import 'package:instant_pay/utilities/colors/color_utils.dart';
-import 'package:instant_pay/utilities/font/font_utils.dart';
-import 'package:instant_pay/utilities/routes/route_utils.dart';
-import 'package:instant_pay/utilities/storage/storage.dart';
-import 'package:instant_pay/view/screen/dashboard/home/model/available_ads_response.dart';
-import 'package:instant_pay/view/screen/help/question_answer_screen.dart';
-import 'package:instant_pay/view/widget/ads_widget/fb_native_add.dart';
-import 'package:instant_pay/view/widget/ads_widget/interstitial_ads_widget.dart';
-import 'package:instant_pay/view/widget/ads_widget/load_ads_by_api.dart';
-import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:quick_loan/utilities/assets/asset_utils.dart';
+import 'package:quick_loan/utilities/colors/color_utils.dart';
+import 'package:quick_loan/utilities/font/font_utils.dart';
+import 'package:quick_loan/utilities/routes/route_utils.dart';
+import 'package:quick_loan/utilities/storage/storage.dart';
+import 'package:quick_loan/view/screen/dashboard/home/model/available_ads_response.dart';
+import 'package:quick_loan/view/screen/help/question_answer_screen.dart';
+import 'package:quick_loan/view/widget/ads_widget/interstitial_ads_widget.dart';
+import 'package:quick_loan/view/widget/ads_widget/load_ads_by_api.dart';
+import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class HelpScreen extends StatefulWidget {
   const HelpScreen({super.key});
@@ -50,9 +46,6 @@ class _HelpScreenState extends State<HelpScreen> {
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-     if (!kDebugMode) {
-        await FirebaseAnalytics.instance.logEvent(name: screenName);
-      }
       final provider =
           Provider.of<InterstitialAdsWidgetProvider>(context, listen: false);
 
@@ -80,6 +73,8 @@ class _HelpScreenState extends State<HelpScreen> {
         }
       }
       if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        print(
+            'screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
         if (isCheckScreen) {
           provider.loadFBInterstitialAd(
               myAdsIdClass: myAdsIdClass,
@@ -120,6 +115,8 @@ class _HelpScreenState extends State<HelpScreen> {
               .isAvailableAds(context: context, screenName: screenName);
           setState(() {});
           if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+            print(
+                'screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
             if (isCheckScreen) {
               provider.loadFBInterstitialAd(
                   myAdsIdClass: myAdsIdClass,
@@ -201,9 +198,7 @@ class _HelpScreenState extends State<HelpScreen> {
   @override
   void dispose() {
     super.dispose();
-    if (receiver != null) {
-      receiver.cancel();
-    }
+    receiver.cancel();
     if (nativeAd != null) {
       nativeAd!.dispose();
     }
@@ -222,7 +217,7 @@ class _HelpScreenState extends State<HelpScreen> {
       setState(() {
         nativeAd = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           nativeTemplateStyle:
               NativeTemplateStyle(templateType: TemplateType.medium),
@@ -323,12 +318,13 @@ class _HelpScreenState extends State<HelpScreen> {
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
+            const SizedBox(height: 10),
             fbNativeAd,
             nativeAd == null || _nativeAdIsLoaded == false
                 ? const SizedBox()
                 : Container(
                     color: Colors.transparent,
-                    height: 370,
+                    height: 275,
                     alignment: Alignment.center,
                     child: AdWidget(ad: nativeAd!),
                   ),
@@ -363,9 +359,7 @@ class _HelpScreenState extends State<HelpScreen> {
                               Provider.of<InterstitialAdsWidgetProvider>(
                                   context,
                                   listen: false);
-                          if (receiver != null) {
-                            receiver.cancel();
-                          }
+                          receiver.cancel();
 
                           provider.showFbOrAdxOrAdmobInterstitialAd(
                             myAdsIdClass: myAdsIdClass,

@@ -1,23 +1,20 @@
-import 'dart:async';
-
+import 'package:action_broadcast/action_broadcast.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:action_broadcast/action_broadcast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:instant_pay/l10n/locale_keys.g.dart';
-import 'package:instant_pay/utilities/colors/color_utils.dart';
-import 'package:instant_pay/utilities/font/font_utils.dart';
-import 'package:instant_pay/utilities/routes/route_utils.dart';
-import 'package:instant_pay/utilities/storage/storage.dart';
-import 'package:instant_pay/view/screen/dashboard/home/loan_short_description_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/home/model/available_ads_response.dart';
-import 'package:instant_pay/view/widget/ads_widget/fb_native_add.dart';
-import 'package:instant_pay/view/widget/ads_widget/interstitial_ads_widget.dart';
-import 'package:instant_pay/view/widget/ads_widget/load_ads_by_api.dart';
-import 'package:instant_pay/view/widget/center_text_button_widget.dart';
+import 'package:quick_loan/l10n/locale_keys.g.dart';
+import 'package:quick_loan/utilities/colors/color_utils.dart';
+import 'package:quick_loan/utilities/font/font_utils.dart';
+import 'package:quick_loan/utilities/routes/route_utils.dart';
+import 'package:quick_loan/utilities/storage/storage.dart';
+import 'package:quick_loan/view/screen/dashboard/home/loan_short_description_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/home/model/available_ads_response.dart';
+import 'package:quick_loan/view/widget/ads_widget/interstitial_ads_widget.dart';
+import 'package:quick_loan/view/widget/ads_widget/load_ads_by_api.dart';
+import 'package:quick_loan/view/widget/center_text_button_widget.dart';
 import 'package:provider/provider.dart';
 
 class DashboardMoreLoansDetailsScreen extends StatefulWidget {
@@ -54,7 +51,7 @@ class _DashboardMoreLoansDetailsScreenState
     initReceiver();
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-     if (!kDebugMode) {
+      if (!kDebugMode) {
         await FirebaseAnalytics.instance.logEvent(name: screenName);
       }
       final provider =
@@ -85,6 +82,8 @@ class _DashboardMoreLoansDetailsScreenState
         }
       }
       if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        print(
+            'screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
         if (isCheckScreen) {
           provider.loadFBInterstitialAd(
               myAdsIdClass: myAdsIdClass,
@@ -125,6 +124,8 @@ class _DashboardMoreLoansDetailsScreenState
               .isAvailableAds(context: context, screenName: screenName);
           setState(() {});
           if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+            print(
+                'screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
             if (isCheckScreen) {
               provider.loadFBInterstitialAd(
                   myAdsIdClass: myAdsIdClass,
@@ -212,9 +213,7 @@ class _DashboardMoreLoansDetailsScreenState
   @override
   void dispose() {
     super.dispose();
-    if (receiver != null) {
-      receiver.cancel();
-    }
+    receiver.cancel();
     if (adxNativeAd != null) {
       adxNativeAd!.dispose();
     }
@@ -238,7 +237,7 @@ class _DashboardMoreLoansDetailsScreenState
       setState(() {
         adxNativeAd = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -267,7 +266,7 @@ class _DashboardMoreLoansDetailsScreenState
       setState(() {
         adxNativeAd1 = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -365,12 +364,13 @@ class _DashboardMoreLoansDetailsScreenState
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  const SizedBox(height: 10),
                   fbNativeAd1,
                   adxNativeAd1 == null || _isAdxNativeAdLoaded1 == false
                       ? const SizedBox()
                       : Container(
                           color: Colors.transparent,
-                          height: 330,
+                          height: 275,
                           alignment: Alignment.center,
                           child: AdWidget(ad: adxNativeAd1!),
                         ),
@@ -446,7 +446,7 @@ class _DashboardMoreLoansDetailsScreenState
                   //                       'How to Apply?',
                   //                       style: FontUtils.h16(
                   //                         fontWeight: FWT.bold,
-                  //                         fontColor: ColorUtils.themeColor.oxff447D58,
+                  //                         fontColor: ColorUtils.themeColor.oxff673AB7,
                   //                       ),
                   //                     ),
                   //                     onTap: () {
@@ -497,12 +497,13 @@ class _DashboardMoreLoansDetailsScreenState
                   //                 ],
                   //               )
                   //             : const SizedBox(),
+                  const SizedBox(height: 10),
                   fbNativeAd,
                   adxNativeAd == null || _isAdxNativeAdLoaded == false
                       ? const SizedBox()
                       : Container(
                           color: Colors.transparent,
-                          height: 330,
+                          height: 275,
                           alignment: Alignment.center,
                           child: AdWidget(ad: adxNativeAd!),
                         ),
@@ -513,9 +514,7 @@ class _DashboardMoreLoansDetailsScreenState
                         final provider =
                             Provider.of<InterstitialAdsWidgetProvider>(context,
                                 listen: false);
-                        if (receiver != null) {
-                          receiver.cancel();
-                        }
+                        receiver.cancel();
 
                         provider.showFbOrAdxOrAdmobInterstitialAd(
                           myAdsIdClass: myAdsIdClass,
@@ -530,9 +529,7 @@ class _DashboardMoreLoansDetailsScreenState
                         final provider =
                             Provider.of<InterstitialAdsWidgetProvider>(context,
                                 listen: false);
-                        if (receiver != null) {
-                          receiver.cancel();
-                        }
+                        receiver.cancel();
 
                         provider.showFbOrAdxOrAdmobInterstitialAd(
                           availableAds: myAdsIdClass.availableAdsList,

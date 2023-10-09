@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:instant_pay/utilities/colors/color_utils.dart';
-import 'package:instant_pay/utilities/font/font_utils.dart';
-import 'package:instant_pay/view/widget/bounce_click_widget.dart';
+import 'package:quick_loan/utilities/colors/color_utils.dart';
+import 'package:quick_loan/utilities/font/font_utils.dart';
+import 'package:quick_loan/view/widget/bounce_click_widget.dart';
 
 class CenterTextButtonWidget extends StatelessWidget {
   final double? height;

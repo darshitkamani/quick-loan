@@ -1,22 +1,20 @@
-import 'dart:async';
 import 'dart:math';
 
+import 'package:action_broadcast/action_broadcast.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:action_broadcast/action_broadcast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:quick_loan/utilities/colors/color_utils.dart';
+import 'package:quick_loan/utilities/font/font_utils.dart';
+import 'package:quick_loan/utilities/storage/storage.dart';
+import 'package:quick_loan/utilities/validators/validators.dart';
+import 'package:quick_loan/view/screen/dashboard/home/model/available_ads_response.dart';
+import 'package:quick_loan/view/widget/ads_widget/interstitial_ads_widget.dart';
+import 'package:quick_loan/view/widget/ads_widget/load_ads_by_api.dart';
+import 'package:quick_loan/view/widget/center_text_button_widget.dart';
 import 'package:intl/intl.dart';
-import 'package:instant_pay/utilities/colors/color_utils.dart';
-import 'package:instant_pay/utilities/font/font_utils.dart';
-import 'package:instant_pay/utilities/storage/storage.dart';
-import 'package:instant_pay/utilities/validators/validators.dart';
-import 'package:instant_pay/view/screen/dashboard/home/model/available_ads_response.dart';
-import 'package:instant_pay/view/widget/ads_widget/fb_native_add.dart';
-import 'package:instant_pay/view/widget/ads_widget/interstitial_ads_widget.dart';
-import 'package:instant_pay/view/widget/ads_widget/load_ads_by_api.dart';
-import 'package:instant_pay/view/widget/center_text_button_widget.dart';
 import 'package:provider/provider.dart';
 
 class EMILoanCalculatorScreen extends StatefulWidget {
@@ -66,7 +64,7 @@ class _EMILoanCalculatorScreenState extends State<EMILoanCalculatorScreen>
     super.initState();
     initReceiver();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-     if (!kDebugMode) {
+      if (!kDebugMode) {
         await FirebaseAnalytics.instance.logEvent(name: screenName);
       }
       final provider =
@@ -95,6 +93,8 @@ class _EMILoanCalculatorScreenState extends State<EMILoanCalculatorScreen>
         }
       }
       if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        print(
+            'screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
         if (isCheckScreen) {
           provider.loadFBInterstitialAd(
               myAdsIdClass: myAdsIdClass,
@@ -182,6 +182,8 @@ class _EMILoanCalculatorScreenState extends State<EMILoanCalculatorScreen>
           setState(() {});
 
           if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+            print(
+                'screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
             if (isCheckScreen) {
               provider.loadFBInterstitialAd(
                   myAdsIdClass: myAdsIdClass,
@@ -266,9 +268,7 @@ class _EMILoanCalculatorScreenState extends State<EMILoanCalculatorScreen>
   @override
   void dispose() {
     super.dispose();
-    if (receiver != null) {
-      receiver.cancel();
-    }
+    receiver.cancel();
 
     if (nativeAd != null) {
       nativeAd!.dispose();
@@ -288,7 +288,7 @@ class _EMILoanCalculatorScreenState extends State<EMILoanCalculatorScreen>
       setState(() {
         nativeAd = NativeAd(
           adUnitId: nativeAdId,
-          factoryId: 'adFactory',
+          factoryId: 'listTileMedium',
           request: const AdRequest(),
           listener: NativeAdListener(
             onAdLoaded: (ad) {
@@ -341,12 +341,13 @@ class _EMILoanCalculatorScreenState extends State<EMILoanCalculatorScreen>
                   key: _formKey,
                   child: Column(
                     children: [
+                      const SizedBox(height: 10),
                       fbNativeAd,
                       nativeAd == null || _nativeAdIsLoaded == false
                           ? const SizedBox()
                           : Container(
                               color: Colors.transparent,
-                              height: 330,
+                              height: 275,
                               alignment: Alignment.center,
                               child: AdWidget(ad: nativeAd!),
                             ),
@@ -633,7 +634,7 @@ class _EMILoanCalculatorScreenState extends State<EMILoanCalculatorScreen>
                       // CenterTextButtonBorderWidget(
                       //   title: Icon(
                       //     Icons.home,
-                      //     color: ColorUtils.themeColor.oxff447D58,
+                      //     color: ColorUtils.themeColor.oxff673AB7,
                       //     size: 35,
                       //   ),
                       //   onTap: () {

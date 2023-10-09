@@ -1,13 +1,12 @@
+import 'package:action_broadcast/action_broadcast.dart';
 import 'package:facebook_audience_network/ad/ad_interstitial.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:action_broadcast/action_broadcast.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:instant_pay/utilities/routes/route_utils.dart';
-import 'package:instant_pay/utilities/storage/storage.dart';
-import 'package:instant_pay/view/screen/dashboard/dash/clarification_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/home/model/available_ads_response.dart';
-import 'package:instant_pay/view/widget/ads_widget/interstitial_dash_ads.dart';
+import 'package:quick_loan/utilities/routes/route_utils.dart';
+import 'package:quick_loan/utilities/storage/storage.dart';
+import 'package:quick_loan/view/screen/dashboard/home/model/available_ads_response.dart';
+import 'package:quick_loan/view/widget/ads_widget/interstitial_dash_ads.dart';
 
 enum AdsType {
   admob,
@@ -39,7 +38,8 @@ class InterstitialAdsWidgetProvider extends ChangeNotifier {
     print(
         'availableAds screenName --> $routeName ---> myAdsIdClass.isGoogle-->${myAdsIdClass.isGoogle} myAdsIdClass.isFacebook ${myAdsIdClass.isFacebook} isCheckScreenForAdInApp $isCheckScreenForAdInApp $availableAds  isShowAds--> $isShowAds  availableAds.contains("Interstitial") -->${!availableAds.contains("Interstitial")} isAdxAdsShow --> $isADXAdsShow isFacebookAdsShow --> $isFacebookAdsShow');
     if (isCheckScreenForAdInApp) {
-      if (myAdsIdClass.isFacebook && isFacebookAdsShow) {
+      if (isInterstitialAdLoaded ||
+          (myAdsIdClass.isFacebook && isFacebookAdsShow)) {
         showFBInterstitialAd(routeName, context,
             arguments: arguments,
             isFreeAds: isFreeAds,
@@ -48,7 +48,8 @@ class InterstitialAdsWidgetProvider extends ChangeNotifier {
             fbInterID: fbInterID,
             myAdsIdClass: myAdsIdClass);
         return;
-      } else if (myAdsIdClass.isGoogle && isADXAdsShow) {
+      } else if (_firstAdxInterstitialAd != null ||
+          (myAdsIdClass.isGoogle && isADXAdsShow)) {
         showAdxInterstitialAd(routeName, context,
             arguments: arguments,
             myAdsIdClass: myAdsIdClass,
@@ -76,7 +77,8 @@ class InterstitialAdsWidgetProvider extends ChangeNotifier {
           googleID: googleInterID, fbID: fbInterID, myAdsIdClass: myAdsIdClass);
       return;
     }
-    if (myAdsIdClass.isFacebook && isFacebookAdsShow) {
+    if (isInterstitialAdLoaded ||
+        (myAdsIdClass.isFacebook && isFacebookAdsShow)) {
       showFBInterstitialAd(routeName, context,
           arguments: arguments,
           isFreeAds: isFreeAds,
@@ -85,7 +87,8 @@ class InterstitialAdsWidgetProvider extends ChangeNotifier {
           fbInterID: fbInterID,
           myAdsIdClass: myAdsIdClass);
       return;
-    } else if (myAdsIdClass.isGoogle && (isAdmobAdsShow || isADXAdsShow)) {
+    } else if (_firstAdxInterstitialAd != null ||
+        (myAdsIdClass.isGoogle && isADXAdsShow)) {
       showAdxInterstitialAd(routeName, context,
           arguments: arguments,
           myAdsIdClass: myAdsIdClass,
@@ -114,6 +117,8 @@ class InterstitialAdsWidgetProvider extends ChangeNotifier {
         ? 'ca-app-pub-3940256099942544/1033173712'
         : googleInterID ?? '';
     // AdsUnitId().getGoogleInterstitialAdId();
+    print(
+        "Load function called while  interstitialAdIdn $interstitialAdId $screenName");
 
     if (interstitialAdId != '') {
       if (isFirstAdmobOrAdxInterstitialAdLoaded == true) {
@@ -234,6 +239,8 @@ class InterstitialAdsWidgetProvider extends ChangeNotifier {
     bool isFailedTwiceToLoadFbAdId = StorageUtils.prefs
             .getBool('${StorageKeyUtils.isFailedTwiceToLoadFbAdId}$fbID') ??
         false;
+    print(
+        'InterstitialAdsForDash.isInterstitialAdLoaded --> ${InterstitialAdsForDash.isInterstitialAdLoaded} isInterstitialAdLoaded --> $isInterstitialAdLoaded isInterstitialAdLoading --> $isInterstitialAdLoading  InterstitialAdsForDash.isInterstitialAdLoading ${InterstitialAdsForDash.isInterstitialAdLoading} Screen name --> isFailedTwiceToLoadFbAdId--> $isFailedTwiceToLoadFbAdId while loading  --. $screenName');
 
     print(
         'Screen name --> isFailedTwiceToLoadFbAdId--> $isFailedTwiceToLoadFbAdId while loading  --. $screenName');
@@ -349,6 +356,16 @@ class InterstitialAdsWidgetProvider extends ChangeNotifier {
         // loadFBInterstitialAd();
       });
     } else {
+      print(
+          '_firstAdxInterstitialAd != null -->${_firstAdxInterstitialAd != null}');
+      if (_firstAdxInterstitialAd != null) {
+        showAdxInterstitialAd(routeName, context,
+            myAdsIdClass: myAdsIdClass,
+            arguments: arguments,
+            googleInterID: googleInterID,
+            fbInterID: fbInterID);
+        return;
+      }
       await getRoute(routeName, loanType ?? '', context, arguments,
           isFrom: AdsType.facebook,
           googleID: googleInterID,

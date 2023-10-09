@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:instant_pay/utilities/colors/theme/theme_handler.dart';
+import 'package:quick_loan/utilities/colors/theme/theme_handler.dart';
 
 class ColorUtils {
   static late ThemeColor themeColor;

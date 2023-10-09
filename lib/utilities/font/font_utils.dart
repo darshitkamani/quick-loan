@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:instant_pay/utilities/colors/color_utils.dart';
+import 'package:quick_loan/utilities/colors/color_utils.dart';
 
 enum FWT {
   bold,
@@ -72,7 +72,8 @@ class FontUtils {
       fontFamily: 'Barlow',
     );
   }
-   static TextStyle h12({
+
+  static TextStyle h12({
     Color? fontColor,
     FWT fontWeight = FWT.regular,
   }) {

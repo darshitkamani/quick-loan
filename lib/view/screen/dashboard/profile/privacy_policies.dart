@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:instant_pay/utilities/colors/color_utils.dart';
-import 'package:instant_pay/utilities/font/font_utils.dart';
+import 'package:quick_loan/utilities/colors/color_utils.dart';
+import 'package:quick_loan/utilities/font/font_utils.dart';
 
 class PrivacyPoliciesScreen extends StatelessWidget {
   const PrivacyPoliciesScreen({super.key});
@@ -49,7 +49,7 @@ class PrivacyPoliciesScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   Text(
                     '''
-At Quick Loan : LOAN GUIDE APP, we understand the importance of protecting our users' personal information. Therefore, we only collect the necessary information from our users to provide guidance for different types of loans and to help them calculate interest rates and charges. 
+At Instant Pay : LOAN GUIDE APP, we understand the importance of protecting our users' personal information. Therefore, we only collect the necessary information from our users to provide guidance for different types of loans and to help them calculate interest rates and charges. 
             
 However, we do not store this information on our server or any other platform. 
             
@@ -80,7 +80,7 @@ We have implemented measures to prevent any unauthorized access to our users' da
 
 We also restrict access to our users' data to only those employees or contractors who need it to provide our loan guidance service. 
 
-At Quick Loan : LOAN GUIDE APP, our users' trust is essential to us, and we are committed to ensuring that their data is always secure with us.''',
+At Instant Pay : LOAN GUIDE APP, our users' trust is essential to us, and we are committed to ensuring that their data is always secure with us.''',
                     style: FontUtils.h14(
                         fontColor: ColorUtils.themeColor.oxff101523,
                         fontWeight: FWT.medium),

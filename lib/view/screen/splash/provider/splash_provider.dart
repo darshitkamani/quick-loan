@@ -1,27 +1,24 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:instant_pay/utilities/env/env_utils.dart';
-import 'package:instant_pay/utilities/storage/storage.dart';
-import 'package:instant_pay/view/screen/dashboard/dashboard_screen.dart';
-import 'package:instant_pay/view/screen/dashboard/home/model/available_ads_response.dart';
+import 'package:quick_loan/utilities/env/env_utils.dart';
+import 'package:quick_loan/utilities/storage/storage.dart';
+import 'package:quick_loan/view/screen/dashboard/dashboard_screen.dart';
+import 'package:quick_loan/view/screen/dashboard/home/model/available_ads_response.dart';
 
 class SplashProvider extends ChangeNotifier {
   getRoutes({required BuildContext context}) async {
     Future.delayed(
       const Duration(seconds: 3),
       () async {
-        // if (!kDebugMode) {
-          await getApiData(context: context);
-        // }
-        // Navigator.pushNamedAndRemoveUntil(context, RouteUtils.dashboardScreen, (route) => false);
+        await getApiData(context: context);
+
         Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(
@@ -39,7 +36,7 @@ class SplashProvider extends ChangeNotifier {
         headers: {"secret_key": dotenv.get(EnvUtils.secretKey)},
       );
 
-      print(res.body);
+      // log(res.body);
 
       if (res.statusCode == 200) {
         AvailableScreenAdsModel availableScreenAdsModel =
@@ -67,13 +64,13 @@ class SplashProvider extends ChangeNotifier {
         StorageUtils.prefs.setString(StorageKeyUtils.availableScreensToShowAds,
             jsonEncode(availableScreenAdsModel.data));
 
-        // if (kDebugMode) {
-        // StorageUtils.prefs.setBool(StorageKeyUtils.isShowFacebookAds, false);
-        // StorageUtils.prefs.setBool(StorageKeyUtils.isShowADXAds, true);
-        // StorageUtils.prefs.setBool(StorageKeyUtils.isShowAdmobAds, true);
-        //   StorageUtils.prefs
-        //       .setBool(StorageKeyUtils.isCheckScreenForAdInApp, false);
-        // }
+        if (kDebugMode) {
+          StorageUtils.prefs.setBool(StorageKeyUtils.isShowFacebookAds, false);
+          StorageUtils.prefs.setBool(StorageKeyUtils.isShowADXAds, true);
+          StorageUtils.prefs.setBool(StorageKeyUtils.isShowAdmobAds, true);
+          StorageUtils.prefs
+              .setBool(StorageKeyUtils.isCheckScreenForAdInApp, false);
+        }
 
         StorageUtils.prefs.setBool(StorageKeyUtils.isUserFirstTime, true);
       }

@@ -1,6 +1,6 @@
 // import 'package:flutter/material.dart';
 // import 'package:google_mobile_ads/google_mobile_ads.dart';
-// import 'package:instant_pay/view/widget/ads_widget/ads_unit_id.dart';
+// import 'package:quick_loan/view/widget/ads_widget/ads_unit_id.dart';
 
 // class BannerAdWidget extends StatefulWidget {
 //   final AdSize? adSize;

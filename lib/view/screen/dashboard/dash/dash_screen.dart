@@ -1,12 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:instant_pay/l10n/locale_keys.g.dart';
-import 'package:instant_pay/utilities/assets/asset_utils.dart';
-import 'package:instant_pay/utilities/colors/color_utils.dart';
-import 'package:instant_pay/utilities/font/font_utils.dart';
-import 'package:instant_pay/utilities/storage/storage.dart';
-import 'package:instant_pay/view/screen/dashboard/dash/loans_screen.dart';
-import 'package:instant_pay/view/widget/lottie_ad_widget.dart';
+import 'package:quick_loan/l10n/locale_keys.g.dart';
+import 'package:quick_loan/utilities/assets/asset_utils.dart';
+import 'package:quick_loan/utilities/colors/color_utils.dart';
+import 'package:quick_loan/utilities/font/font_utils.dart';
+import 'package:quick_loan/utilities/storage/storage.dart';
+import 'package:quick_loan/view/screen/dashboard/dash/loans_screen.dart';
+import 'package:quick_loan/view/widget/lottie_ad_widget.dart';
 
 class DashScreen extends StatefulWidget {
   const DashScreen({super.key});

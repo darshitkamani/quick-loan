@@ -1,9 +1,11 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:instant_pay/utilities/assets/asset_utils.dart';
-import 'package:instant_pay/utilities/colors/color.dart';
-import 'package:instant_pay/utilities/font/font_utils.dart';
+import 'package:quick_loan/utilities/assets/asset_utils.dart';
+import 'package:quick_loan/utilities/colors/color.dart';
+import 'package:quick_loan/utilities/font/font_utils.dart';
 import 'package:provider/provider.dart';
-import 'package:instant_pay/view/screen/splash/provider/splash_provider.dart';
+import 'package:quick_loan/view/screen/splash/provider/splash_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -16,7 +18,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      if (!kDebugMode) {
+        await FirebaseAnalytics.instance.logEvent(name: 'SplashScreen');
+      }
       FocusScope.of(context).unfocus();
     });
     final provider = Provider.of<SplashProvider>(context, listen: false);

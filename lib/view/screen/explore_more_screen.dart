@@ -4,15 +4,15 @@
 // import 'package:action_broadcast/action_broadcast.dart';
 // import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 // import 'package:google_mobile_ads/google_mobile_ads.dart';
-// import 'package:instant_pay/utilities/colors/color_utils.dart';
-// import 'package:instant_pay/utilities/font/font_utils.dart';
-// import 'package:instant_pay/utilities/routes/route_utils.dart';
-// import 'package:instant_pay/utilities/storage/storage.dart';
-// import 'package:instant_pay/view/screen/dashboard/home/model/available_ads_response.dart';
-// import 'package:instant_pay/view/widget/ads_widget/fb_native_add.dart';
-// import 'package:instant_pay/view/widget/ads_widget/interstitial_ads_widget.dart';
-// import 'package:instant_pay/view/widget/ads_widget/load_ads_by_api.dart';
-// import 'package:instant_pay/view/widget/bounce_click_widget.dart';
+// import 'package:quick_loan/utilities/colors/color_utils.dart';
+// import 'package:quick_loan/utilities/font/font_utils.dart';
+// import 'package:quick_loan/utilities/routes/route_utils.dart';
+// import 'package:quick_loan/utilities/storage/storage.dart';
+// import 'package:quick_loan/view/screen/dashboard/home/model/available_ads_response.dart';
+// import 'package:quick_loan/view/widget/ads_widget/fb_native_add.dart';
+// import 'package:quick_loan/view/widget/ads_widget/interstitial_ads_widget.dart';
+// import 'package:quick_loan/view/widget/ads_widget/load_ads_by_api.dart';
+// import 'package:quick_loan/view/widget/bounce_click_widget.dart';
 // import 'package:provider/provider.dart';
 
 // class ExploreMoreScreen extends StatefulWidget {
@@ -64,6 +64,7 @@
 //       }
 
 //       if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        // print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
 //         if (isFacebookAdsShow) {
 //           provider.loadFBInterstitialAd(
 //               screenName: screenName,
@@ -93,6 +94,7 @@
 //           setState(() {});
 
 //           if (myAdsIdClass.availableAdsList.contains("Interstitial")) {
+        // print('screenName $screenName === isCheckScreen -- $isCheckScreen === myAdsIdClass.isFacebook -- ${myAdsIdClass.isFacebook} === isFacebookAdsShow -- $isFacebookAdsShow === myAdsIdClass.isGoogle -- ${myAdsIdClass.isGoogle} === isADXAdsShow -- $isADXAdsShow');
 //             if (isFacebookAdsShow) {
 //               provider.loadFBInterstitialAd(
 //                   screenName: screenName,
@@ -171,7 +173,7 @@
 //       setState(() {
 //         adxNativeAd = NativeAd(
 //           adUnitId: nativeAdId,
-//           factoryId: 'adFactory',
+//           factoryId: 'listTileMedium',
 //           request: const AdRequest(),
 //           listener: NativeAdListener(
 //             onAdLoaded: (ad) {
@@ -194,7 +196,7 @@
 //   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(
-//         backgroundColor: ColorUtils.themeColor.oxff447D58,
+//         backgroundColor: ColorUtils.themeColor.oxff673AB7,
 //         automaticallyImplyLeading: false,
 //         leading: IconButton(
 //             onPressed: () {
@@ -220,7 +222,7 @@
 //                 ? const SizedBox()
 //                 : Container(
 //                     color: Colors.transparent,
-//                     height: 330,
+//                     height: 275,
 //                     alignment: Alignment.center,
 //                     child: AdWidget(ad: adxNativeAd!),
 //                   ),
